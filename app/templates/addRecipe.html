@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Add recipe</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(size=32) }}
+        </p>
+        <p>
+            {{ form.content.label }}<br>
+            {{ form.content(size=250) }}
+        </p>
+        <p>
+            {{ form.ingredients.label }}<br>
+            {{ form.ingredients(size=32) }}
+        </p>
+        <p>
+            {{ form.allergens.label }}<br>
+            {{ form.allergens(size=32) }}
+        </p>
+        <p>
+            {{ form.cuisine.label }}<br>
+        </p>
+        <p>
+            {{ form.country.label }}<br>
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
