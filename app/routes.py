@@ -1,6 +1,6 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
-from app import app
+from app import app, db
 from app.forms import LoginForm, RecipeForm
 from app.models import Recipe
 
@@ -19,6 +19,19 @@ def login():
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
     form = RecipeForm()
+    if form.validate_on_submit():
+        recipe = Recipe(
+            name=form.name.data, 
+            content=form.content.data, 
+            ingredients=form.ingredients.data,
+            allergens=form.allergens.data,
+            cuisine_id=form.cuisine.data,
+            country_id=form.country.data
+        )
+        db.session.add(recipe)
+        db.session.commit()
+        flash("Congrats, you have added a recipe!")
+        return redirect(url_for('recipes_list'))
     return render_template("add_recipe.html", title='Add Recipe', form=form)
 
 @app.route('/recipe/<recipe_name>')

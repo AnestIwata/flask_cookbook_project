@@ -13,7 +13,7 @@ class RecipeForm(FlaskForm):
     content = TextAreaField('Your recipe instructions: ', validators=[Length(min=0, max=500)])
     ingredients = StringField('Ingredients', validators=[DataRequired()])
     allergens = StringField('Allergens', validators=[DataRequired()])
-    cuisine = SelectField('Cuisine', choices= [('1','American'), ('2', 'Mexican')], validators=[DataRequired()])
-    country = SelectField('Country you are from', choices= [('1','USA'), ('2', 'Mexico')], validators=[DataRequired()])
+    cuisine = SelectField('Cuisine', coerce=int, choices= [(1,'American'), (2, 'Mexican')], validators=[DataRequired()], id='select_cuisine')
+    country = SelectField('Country you are from', coerce=int, choices= [(1,'USA'), (2, 'Mexico')], validators=[DataRequired()], id='select_country')
 
     submit = SubmitField('Submit')
