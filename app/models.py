@@ -4,6 +4,20 @@ class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
     content = db.Column(db.String(500))
+    cuisine = db.Column(db.String(64))
+    country = db.Column(db.String(64))
+    
+    ingredients = db.Column(db.String(500))
+    allergens = db.Column(db.String(500))
+
+class Ingredient(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+
+class Allergen(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
