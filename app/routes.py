@@ -6,7 +6,7 @@ from app.forms import LoginForm, RecipeForm
 # Homepage route
 @app.route('/')
 @app.route('/index')
-def home_page():
+def index():
     return render_template("index.html")
 
 # Login page route

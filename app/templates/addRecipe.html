@@ -1,33 +1,12 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block content %}
     <h1>Add recipe</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.name.label }}<br>
-            {{ form.name(size=32) }}
-        </p>
-        <p>
-            {{ form.content.label }}<br>
-            {{ form.content(size=250) }}
-        </p>
-        <p>
-            {{ form.ingredients.label }}<br>
-            {{ form.ingredients(size=32) }}
-        </p>
-        <p>
-            {{ form.allergens.label }}<br>
-            {{ form.allergens(size=32) }}
-        </p>
-        <p>
-            {{ form.cuisine.label }}<br>
-            {{ form.cuisine(size=1) }}
-        </p>
-        <p>
-            {{ form.country.label }}<br>
-            {{ form.country(size=1) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+    <br>
 {% endblock %}
