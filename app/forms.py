@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
-from wtf.validators import DataRequired
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
+from wtforms.validators import DataRequired, Length
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -13,7 +13,7 @@ class RecipeForm(FlaskForm):
     content = TextAreaField('Your recipe instructions: ', validators=[Length(min=0, max=500)])
     ingredients = StringField('Ingredients', validators=[DataRequired()])
     allergens = StringField('Allergens', validators=[DataRequired()])
-    cuisine = SelectField('Cuisine', choices= ['American', 'Mexican'], validators=[DataRequired()])
-    country = SelectField('Cuisine', choices= ['USA', 'Mexico'], validators=[DataRequired()])
+    cuisine = SelectField('Cuisine', choices= [('American','USA'), ('Mexican', 'Mexico')], validators=[DataRequired()])
+    country = SelectField('Cuisine', choices= [('American','USA'), ('Mexican', 'Mexico')], validators=[DataRequired()])
 
     submit = SubmitField('Submit')
