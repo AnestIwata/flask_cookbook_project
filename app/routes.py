@@ -8,6 +8,7 @@ db = SQLAlchemy(app)
 
 # Homepage route
 @app.route('/')
+@app.route('/index')
 def home_page():
     return render_template("index.html")
 
