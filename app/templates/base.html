@@ -8,6 +8,13 @@
     {% block head %}{% endblock %}
 </head>
 <body>
-    {% block body %}{% endblock %}
+    <div>
+        Flask Cookbook:
+        <a href="/index">Home</a>
+        <a href="/login">Login</a>
+        <a href="/add_recipe">Add Recipe</a>
+    </div>
+    <hr>
+    {% block content %}{% endblock %}
 </body>
 </html>
