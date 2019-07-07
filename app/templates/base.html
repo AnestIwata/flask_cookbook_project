@@ -14,12 +14,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url_for('.index') }}">Microblog</a>
+                <a class="navbar-brand" href="{{ url_for('.index') }}">Flask Cookbook</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('.add_recipe') }}">Add Recipe</a></li>
+                    <li><a href="{{ url_for('add_recipe') }}">Add Recipe</a></li>
+                    <li><a href="{{ url_for('recipes_list') }}">View Recipes</a></li>
                 </ul>
             </div>
         </div>
