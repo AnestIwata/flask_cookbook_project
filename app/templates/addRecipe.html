@@ -22,9 +22,11 @@
         </p>
         <p>
             {{ form.cuisine.label }}<br>
+            {{ form.cuisine(size=1) }}
         </p>
         <p>
             {{ form.country.label }}<br>
+            {{ form.country(size=1) }}
         </p>
         <p>{{ form.submit() }}</p>
     </form>

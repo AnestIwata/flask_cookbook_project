@@ -1,1 +1,1 @@
-gunicorn cookbook:app
+web: gunicorn cookbook:app
