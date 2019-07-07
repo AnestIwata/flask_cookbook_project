@@ -19,13 +19,17 @@ def login():
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
     form = RecipeForm()
-    return render_template("addRecipe.html", title='Add Recipe', form=form)
+    return render_template("add_recipe.html", title='Add Recipe', form=form)
 
 @app.route('/recipe/<recipe_name>')
 def recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     return render_template("recipe.html", recipe=recipe)
 
+@app.route('/recipes_list')
+def recipes_list():
+    recipes = Recipe.query.all()
+    return render_template("recipes_list.html", recipes=recipes)
 if __name__ == "__main__":
     app.run(debug=True)
 
