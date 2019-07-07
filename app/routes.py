@@ -2,6 +2,7 @@ from flask import Flask, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from app import app
 from app.forms import LoginForm, RecipeForm
+from app.models import Recipe
 
 # Homepage route
 @app.route('/')
@@ -19,6 +20,11 @@ def login():
 def add_recipe():
     form = RecipeForm()
     return render_template("addRecipe.html", title='Add Recipe', form=form)
+
+@app.route('/recipe/<recipe_name>')
+def recipe(recipe_name):
+    recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
+    return render_template("recipe.html", recipe=recipe)
 
 if __name__ == "__main__":
     app.run(debug=True)
