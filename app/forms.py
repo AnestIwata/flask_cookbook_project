@@ -10,7 +10,7 @@ class LoginForm(FlaskForm):
 
 class RecipeForm(FlaskForm):
     name = StringField('Recipe Name', validators=[DataRequired()])
-    content = TextAreaField('Your recipe instructions: ', validators=[Length(min=0, max=500)])
+    content = TextAreaField('Your recipe instructions: ', validators=[Length(min=50, max=5000)])
     ingredients = StringField('Ingredients', validators=[DataRequired()])
     allergens = StringField('Allergens', validators=[DataRequired()])
     cuisine = SelectField('Cuisine', coerce=int, choices= [(1,'American'), (2, 'Mexican')], validators=[DataRequired()], id='select_cuisine')

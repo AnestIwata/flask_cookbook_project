@@ -23,10 +23,10 @@ def add_recipe():
         recipe = Recipe(
             name=form.name.data, 
             content=form.content.data, 
-            ingredients=form.ingredients.data,
-            allergens=form.allergens.data,
-            cuisine_id=form.cuisine.data,
-            country_id=form.country.data
+            # ingredients=form.ingredients.data,
+            # allergens=form.allergens.data,
+            cuisine=form.cuisine.data,
+            country=form.country.data
         )
         db.session.add(recipe)
         db.session.commit()
