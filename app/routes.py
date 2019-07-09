@@ -1,8 +1,10 @@
 from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from app import app, db
-from app.forms import LoginForm, RecipeForm
-from app.models import Recipe
+from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm
+from app.models import Recipe, User
+from flask_login import login_user, logout_user, current_user, login_required
+from werkzeug.urls import url_parse
 
 # Homepage route
 @app.route('/')
@@ -11,10 +13,18 @@ def index():
     return render_template("index.html")
 
 # Login page route
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = LoginForm()
-    return render_template("login.html", title='Login', form=form)
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+    return render_template('login.html', title='Sign In', form=form)
 
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
@@ -42,7 +52,18 @@ def recipe(recipe_name):
 @app.route('/recipes_list')
 def recipes_list():
     recipes = Recipe.query.all()
-    return render_template("recipes_list.html", recipes=recipes)
+    return render_template("recipes_list.html", title='Recipes', recipes=recipes)
+
+@app.route('/contact', methods=["GET", "POST"])
+def contact():
+    form = ContactForm()
+    return render_template("contact.html", form=form)
+
+@app.route('/register', methods=["GET", "POST"])
+def register():
+    form = RegistrationForm()
+    return render_template("register.html", form=form)
+
 if __name__ == "__main__":
     app.run(debug=True)
 
