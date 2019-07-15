@@ -43,3 +43,13 @@ class ContactForm(FlaskForm):
     subject = StringField('Subject', validators=[DataRequired()])
     message = TextAreaField('Message: ', validators=[Length(min=10, max=5000)])
     submit = SubmitField('Submit')
+
+class SearchForm(FlaskForm):
+    category = SelectField('Category', coerce=int, validators=[DataRequired()], id='select_cuisine')
+    ingredients = SelectField('Ingredients', coerce=int, validators=[DataRequired()], id='select_cuisine')
+    any_ingredients = SelectField('Recipe needs to have', coerce=int, validators=[DataRequired()], id='select_cuisine')
+    search_text = StringField()
+    submit = SubmitField('Search Recipes')
+
+
+
