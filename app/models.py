@@ -11,7 +11,7 @@ class Recipe(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     ingredients = db.relationship('Ingredient', backref='includes')
     allergens = db.relationship('Allergen', backref='may contain')
-    # category = db.relationship('Category', backref='is in category')
+    category = db.relationship('Category', backref='is in category')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
@@ -50,7 +50,7 @@ class User(UserMixin, db.Model):
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
-    # category_recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+    category_recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
 
     def __repr__(self):
         return '<Category {}>'.format(self.name) 
