@@ -5,7 +5,7 @@ from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, Sear
 from app.models import Recipe, User, Ingredient
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
-from app.poppulate_database import Poppulate
+# from app.poppulate_database import Poppulate
 
 # Homepage route
 @app.route('/')
@@ -30,7 +30,7 @@ def login():
 
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
-    Poppulate.poppulate_database()
+    # Poppulate.poppulate_database()
     form = RecipeForm()
     # Change this to current user.
     user = User(username="Frank", email="frank@ma.com", password_hash="sads", country="Poland")
