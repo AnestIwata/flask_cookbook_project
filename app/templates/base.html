@@ -50,14 +50,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('login') }}">Login</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Recipes
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ url_for('recipes_list')  }}">Browse Recipes</a>
-                            <a class="dropdown-item" href="{{ url_for('recipes_list') }}">Recipe Detail</a>
-                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('recipes_list') }}">Recipes</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('contact')  }}">Contact</a>
@@ -99,17 +96,16 @@
             <div class="col-lg-3 col-sm-3">
                 <h5>Archive</h5>
                 <ul>
-                    <li><a href="#">June 2018</a></li>
-                    <li><a href="#">July 2018</a></li>
-                    <li><a href="#">August 2018</a></li>
-                    <li><a href="#">September 2018</a></li>
+                    <li><a href="#">July 2019</a></li>
+                    <li><a href="#">June 2019</a></li>
+                    <li><a href="#">May 2019</a></li>
+                    <li><a href="#">April 2019</a></li>
                 </ul>
             </div>
             <div class="col-lg-3 col-sm-3">
                 <h5>Recipes</h5>
                 <ul>
                     <li><a href="{{ url_for('recipes_list')  }}">Browse Recipes</a></li>
-                    <li><a href="{{ url_for('recipes_list')  }}">Recipe Detail</a></li>
                     <li><a href="{{ url_for('add_recipe')  }}">Add Recipe</a></li>
                 </ul>
             </div>

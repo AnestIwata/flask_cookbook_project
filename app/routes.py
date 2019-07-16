@@ -1,16 +1,18 @@
 from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from app import app, db
-from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm
-from app.models import Recipe, User
+from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm
+from app.models import Recipe, User, Ingredient
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
+# from app.poppulate_database import Poppulate
 
 # Homepage route
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template("index.html")
+    recipes = Recipe.query.all()
+    return render_template("index.html", recipes=recipes)
 
 # Login page route
 @app.route('/login', methods=["GET", "POST"])
@@ -28,15 +30,23 @@ def login():
 
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
+    # Poppulate.poppulate_database()
     form = RecipeForm()
+    # Change this to current user.
+    user = User(username="Frank", email="frank@ma.com", password_hash="sads", country="Poland")
+    form.ingredients.choices  = db.session.query(Ingredient.id, Ingredient.name).all()
     if form.validate_on_submit():
+        db_ingredients = []
+        for ingredient in form.ingredients.data:
+            db_ingredients.append(Ingredient.query.filter_by(id=ingredient))
+
         recipe = Recipe(
             name=form.name.data, 
             content=form.content.data, 
-            # ingredients=form.ingredients.data,
+            # ingredients=db_ingredients,
             # allergens=form.allergens.data,
+            author=user,
             cuisine=form.cuisine.data,
-            country=form.country.data
         )
         db.session.add(recipe)
         db.session.commit()
@@ -51,6 +61,7 @@ def recipe(recipe_name):
 
 @app.route('/recipes_list')
 def recipes_list():
+    form = SearchForm()
     recipes = Recipe.query.all()
     return render_template("recipes_list.html", title='Recipes', recipes=recipes)
 

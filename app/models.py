@@ -8,11 +8,10 @@ class Recipe(db.Model):
     name = db.Column(db.String(64), index=True, unique=True)
     content = db.Column(db.String(500))
     cuisine = db.Column(db.String(64), index=True)
-    country = db.Column(db.String(64), index=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     ingredients = db.relationship('Ingredient', backref='includes')
     allergens = db.relationship('Allergen', backref='may contain')
-    category = db.relationship('Category', backref='is in category')
+    # category = db.relationship('Category', backref='is in category')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
@@ -21,7 +20,7 @@ class Recipe(db.Model):
 
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
+    name = db.Column(db.String(64), unique=True)
     ingredient_recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
 
     def __repr__(self):
@@ -51,4 +50,10 @@ class User(UserMixin, db.Model):
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
-    category_recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+    # category_recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+
+    def __repr__(self):
+        return '<Category {}>'.format(self.name) 
+
+    def get_all_categories():
+        return Category.query
