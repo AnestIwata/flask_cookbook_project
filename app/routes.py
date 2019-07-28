@@ -3,13 +3,14 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm
-from app.models import Recipe, User, Ingredient
-# from app.poppulate_database import Poppulate
+from app.models import Recipe, User, Ingredient, Country
+from app.poppulate_database import Poppulate
 
 # Homepage route
 @app.route('/')
 @app.route('/index')
 def index():
+    Poppulate.poppulate_database()
     recipes = Recipe.query.all()
     return render_template("index.html", recipes=recipes)
 
@@ -52,8 +53,8 @@ def add_recipe():
     # Poppulate.poppulate_database()
     form = RecipeForm()
     # Change this to current user.
-    user = User(username="Frank", email="frank@ma.com", password_hash="sads", country="Poland")
     form.ingredients.choices  = db.session.query(Ingredient.id, Ingredient.name).all()
+    form.ingredients.countries  = db.session.query(Country.id, Country.name).all()
     if form.validate_on_submit():
         db_ingredients = []
         for ingredient in form.ingredients.data:
@@ -64,7 +65,7 @@ def add_recipe():
             content=form.content.data, 
             # ingredients=db_ingredients,
             # allergens=form.allergens.data,
-            # author=user,
+            author=current_user,
             cuisine=form.cuisine.data,
         )
         db.session.add(recipe)

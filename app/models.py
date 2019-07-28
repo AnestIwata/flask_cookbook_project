@@ -78,3 +78,13 @@ class Country(db.Model):
 
     def get_all_countries():
         return Country.query
+
+class Cuisine(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+
+    def __repr__(self):
+        return '<Cuisine {}>'.format(self.name) 
+
+    def get_all_cuisines():
+        return Cuisine.query

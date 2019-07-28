@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import SelectMultipleField, StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, Email, ValidationError, EqualTo
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from app.models import User, Category, Country
+from app.models import User, Category, Country, Cuisine
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -33,7 +33,7 @@ class RecipeForm(FlaskForm):
     content = TextAreaField('Your recipe instructions: ', validators=[Length(min=50, max=5000)])
     ingredients = SelectMultipleField('Ingredients', coerce=int, validators=[DataRequired()])
     allergens = StringField('Allergens', validators=[DataRequired()])
-    cuisine = SelectField('Cuisine', coerce=int, choices= [(1,'American'), (2, 'Mexican')], validators=[DataRequired()], id='select_cuisine')
+    cuisine = QuerySelectField(u'Cuisine', query_factory=Cuisine.get_all_cuisines, get_label='name')
     category = QuerySelectField(u'Choose category', query_factory=Category.get_all_categories, get_label='name')
     country = QuerySelectField(u'Country you are from', query_factory=Country.get_all_countries, get_label='name')
     submit = SubmitField('Submit')
