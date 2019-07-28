@@ -1,10 +1,9 @@
 from flask import Flask, flash, redirect, render_template, request, url_for
-from flask_sqlalchemy import SQLAlchemy
+from flask_login import login_user, logout_user, current_user, login_required
+from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm
 from app.models import Recipe, User, Ingredient
-from flask_login import login_user, logout_user, current_user, login_required
-from werkzeug.urls import url_parse
 # from app.poppulate_database import Poppulate
 
 # Homepage route
@@ -26,7 +25,27 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
+        return render_template('index.html', title='Sign In', form=form)
     return render_template('login.html', title='Sign In', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash("Congrats, you are now a registered user!")
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
 
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
@@ -45,7 +64,7 @@ def add_recipe():
             content=form.content.data, 
             # ingredients=db_ingredients,
             # allergens=form.allergens.data,
-            author=user,
+            # author=user,
             cuisine=form.cuisine.data,
         )
         db.session.add(recipe)
@@ -69,12 +88,4 @@ def recipes_list():
 def contact():
     form = ContactForm()
     return render_template("contact.html", form=form)
-
-@app.route('/register', methods=["GET", "POST"])
-def register():
-    form = RegistrationForm()
-    return render_template("register.html", form=form)
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
