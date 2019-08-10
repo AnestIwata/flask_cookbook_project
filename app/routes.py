@@ -40,7 +40,11 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
+        user = User(
+            username=form.username.data, 
+            email=form.email.data,
+            country=form.country.data
+            )
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -52,21 +56,21 @@ def register():
 def add_recipe():
     if current_user.is_authenticated:
         form = RecipeForm()
-        form.ingredients.choices  = db.session.query(Ingredient.id, Ingredient.name).all()
-        form.ingredients.countries  = db.session.query(Country.id, Country.name).all()
-        user = current_user
+        form.ingredients.choices = db.session.query(Ingredient.id, Ingredient.name).all()
+        form.ingredients.countries = db.session.query(Country.id, Country.name).all()
         if form.validate_on_submit():
-            db_ingredients = []
-            for ingredient in form.ingredients.data:
-                db_ingredients.append(Ingredient.query.filter_by(id=ingredient))
-
+            # db_ingredients = []
+            # for ingredient in form.ingredients.data:
+            #     db_ingredients.append(Ingredient.query.filter_by(id=ingredient))
+            print(form.cuisine.data)
             recipe = Recipe(
                 name=form.name.data, 
                 content=form.content.data, 
-                # ingredients=db_ingredients,
-                # allergens=form.allergens.data,
-                # author=,
                 cuisine=form.cuisine.data,
+                category=form.category.data,
+                # ingredients=form.ingredients.data,
+                # allergens=form.allergens.data,
+                author=current_user
             )
             db.session.add(recipe)
             db.session.commit()
