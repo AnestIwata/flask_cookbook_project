@@ -50,28 +50,31 @@ def register():
 
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
-    # Poppulate.poppulate_database()
-    form = RecipeForm()
-    # Change this to current user.
-    form.ingredients.choices  = db.session.query(Ingredient.id, Ingredient.name).all()
-    form.ingredients.countries  = db.session.query(Country.id, Country.name).all()
-    if form.validate_on_submit():
-        db_ingredients = []
-        for ingredient in form.ingredients.data:
-            db_ingredients.append(Ingredient.query.filter_by(id=ingredient))
+    if current_user.is_authenticated:
+        form = RecipeForm()
+        form.ingredients.choices  = db.session.query(Ingredient.id, Ingredient.name).all()
+        form.ingredients.countries  = db.session.query(Country.id, Country.name).all()
+        user = current_user
+        if form.validate_on_submit():
+            db_ingredients = []
+            for ingredient in form.ingredients.data:
+                db_ingredients.append(Ingredient.query.filter_by(id=ingredient))
 
-        recipe = Recipe(
-            name=form.name.data, 
-            content=form.content.data, 
-            # ingredients=db_ingredients,
-            # allergens=form.allergens.data,
-            author=current_user,
-            cuisine=form.cuisine.data,
-        )
-        db.session.add(recipe)
-        db.session.commit()
-        flash("Congrats, you have added a recipe!")
-        return redirect(url_for('recipes_list'))
+            recipe = Recipe(
+                name=form.name.data, 
+                content=form.content.data, 
+                # ingredients=db_ingredients,
+                # allergens=form.allergens.data,
+                # author=,
+                cuisine=form.cuisine.data,
+            )
+            db.session.add(recipe)
+            db.session.commit()
+            flash("Congrats, you have added a recipe!")
+            return redirect(url_for('recipes_list'))
+    else:
+        flash("You need to login before you add recipe.")
+        return redirect(url_for('login'))
     return render_template("add_recipe.html", title='Add Recipe', form=form)
 
 @app.route('/recipe/<recipe_name>')
