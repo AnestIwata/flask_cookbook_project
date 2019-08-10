@@ -9,6 +9,12 @@ ingredients = db.Table(
     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'))
 )
 
+allergens = db.Table(
+    'allergens',
+    db.Column('allergen_id', db.Integer, db.ForeignKey('allergen_id')),
+    db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'))
+)
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
