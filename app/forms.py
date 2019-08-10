@@ -16,6 +16,7 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    country = QuerySelectField(u'Country you are from', query_factory=Country.get_all_countries, get_label='name')
     submit = SubmitField('Register')
 
     def validate_username(self, username):
@@ -35,7 +36,6 @@ class RecipeForm(FlaskForm):
     allergens = StringField('Allergens', validators=[DataRequired()])
     cuisine = QuerySelectField(u'Cuisine', query_factory=Cuisine.get_all_cuisines, get_label='name')
     category = QuerySelectField(u'Choose category', query_factory=Category.get_all_categories, get_label='name')
-    country = QuerySelectField(u'Country you are from', query_factory=Country.get_all_countries, get_label='name')
     submit = SubmitField('Submit')
 
 
