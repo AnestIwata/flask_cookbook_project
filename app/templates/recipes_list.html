@@ -27,7 +27,14 @@
                 <select class="js-search-ingredients form-control" name="ingredients[]" multiple="multiple" data-placeholder="Included Ingredients">
                     <!-- Jinja for ingredients -->
                     {% for ingredient in ingredients %}
-                        <option value="1">{{ ingredient.name }}</option>
+                        <option value="{{ ingredient.id }}">{{ ingredient.name }}</option>
+                    {% endfor %}
+                </select>
+                <label>Select one or more allergens that shouldn't be included in recipe</label>
+                <select class="js-search-ingredients form-control" name="allergens[]" multiple="multiple" data-placeholder="Without allergens">
+                    <!-- Jinja for ingredients -->
+                    {% for allergen in allergens %}
+                        <option value="{{ allergen.id }}">{{ allergen.name }}</option>
                     {% endfor %}
                 </select>
                             </div>
@@ -64,19 +71,7 @@
 
                 <!-- Jinja generate this recipe -->
                 {% for recipe in recipes %}
-                <div class="col-lg-4 col-sm-6">
-                    <div class="box grid recipes">
-                        <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.name }}</div>
-                        <a href="#"><img src="images/recipe2.jpg" alt=""></a>
-                        <h2><a href="#">{{ recipe.name }} </a></h2>
-                        <p>{{ recipe.content }}</p>
-                        <div class="tag">
-                            {% for ingredient in first_three_ingredients %}
-                                <a href="#">{{ ingredient.name }}</a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
+                    {% include '_recipe.html' %}
                 {% endfor %}
 
 
