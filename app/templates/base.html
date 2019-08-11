@@ -14,16 +14,16 @@
     {% endif %}
 
     <!---Font Icon-->
-    <link href="static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='static/css/font-awesome.min.css') }}" rel="stylesheet">
 
     <!-- static/css -->
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="static/css/styles.min.css" rel="stylesheet">
-    <link href="static/css/select2.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='static/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='static/css/styles.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='static/css/select2.min.css') }}" rel="stylesheet">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="static/favicon.ico" />
-    <link rel="icon" href="static/favicon.ico" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='static/favicon.ico') }}" />
+    <link rel="icon" href="{{ url_for('static', filename='static/favicon.ico') }}" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -113,12 +113,12 @@
 {% endblock %}
 
 <!-- Javascript -->
-<script src="static/js/plugins/jquery.min.js"></script>
-<script src="static/js/plugins/popper.min.js"></script>
-<script src="static/js/plugins/bootstrap.min.js"></script>
-<script src="static/js/plugins/select2.min.js"></script>
-<script src="static/js/plugins/jquery-ui.js"></script>
+<script src="{{ url_for('static', filename='static/js/plugins/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='static/js/plugins/popper.min.js') }}"></script>
+<script src=" {{ url_for('static', filename='static/js/plugins/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='static/js/plugins/select2.min.js') }}"></script>
+<script src="{{ url_for('static', filename='static/js/plugins/jquery-ui.js') }}"></script>
 
-<script src="static/js/scripts.js"></script>
+<script src="{{ url_for('static', filename='static/js/scripts.js') }}"></script>
 
 </html>
