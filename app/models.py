@@ -44,6 +44,9 @@ class Recipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisine.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    serves_num_people = db.Column(db.Integer)
+    time_to_prepare = db.Column(db.Integer)
+    cooking_time = db.Column(db.Integer)
     image = db.Column(db.String(64))
 
     # Many to many relations
