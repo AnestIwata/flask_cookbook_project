@@ -65,7 +65,6 @@ def add_recipe():
             filename = secure_filename(f.filename)
             file_path = os.path.join(app.config['UPLOAD_FOLDER'],  filename)
             f.save(file_path)
-            print(form.ingredients.data)
             
             recipe = Recipe(
                 name=form.name.data, 
@@ -80,14 +79,12 @@ def add_recipe():
             for ingredient in form.ingredients.data:
                 queried_ingredient = Ingredient.query.filter_by(id=ingredient).first()
                 ingredients_in_recipe.append(queried_ingredient)
-            print(ingredients_in_recipe)
             recipe._ingredients=ingredients_in_recipe
 
             allergens_in_recipe = []
             for allergen in form.allergens.data:
                 queried_allergen = Allergen.query.filter_by(id=allergen).first()
                 allergens_in_recipe.append(queried_allergen)
-            print(allergens_in_recipe)
             recipe._allergens=allergens_in_recipe
 
             db.session.add(recipe)
@@ -131,12 +128,20 @@ def search_handler():
     ingredients_form = request.form.getlist('ingredients[]')
     allergens_form = request.form.getlist('allergens[]')
     choose_ingredients = request.form.get('choose_ingredients')
-    recipes = Recipe.query.filter_by(category_id=category_form).all()
-
+    queried_recipes = []
+    recipes_ingredients = []
+    if category_form!=[]:
+        recipes = Recipe.query.filter_by(category_id=category_form).all()
+        queried_recipes = list(set(queried_recipes + recipes))
+    if ingredients_form!=[]:
+        for ingredient in ingredients_form:
+            recipes_ingredients.extend(Recipe.query.filter(Recipe._ingredients.any(Ingredient.name == ingredient)).all())
+        # queried_recipes = list(set(queried_recipes + recipes_ingredients))
+    print(recipes_ingredients)
     form = SearchForm()
     ingredients = Ingredient.query.all()
     categories = Category.query.all()
     first_three_ingredients = Ingredient.query.limit(3).all()
     allergens = Allergen.query.all()
-    return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes, categories=categories,
+    return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes_ingredients, categories=categories,
                             ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens)

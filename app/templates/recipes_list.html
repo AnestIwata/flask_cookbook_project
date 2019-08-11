@@ -28,7 +28,7 @@
                 <select class="js-search-ingredients form-control" name="ingredients[]" multiple="multiple" data-placeholder="Included Ingredients" form="category_form">
                     <!-- Jinja for ingredients -->
                     {% for ingredient in ingredients %}
-                        <option value="{{ ingredient.id }}">{{ ingredient.name }}</option>
+                        <option value="{{ ingredient.name }}">{{ ingredient.name }}</option>
                     {% endfor %}
                 </select>
                 <label>Select one or more allergens that shouldn't be included in recipe</label>
