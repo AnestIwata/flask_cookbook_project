@@ -270,4 +270,12 @@ class Poppulate():
             
             db.session.commit()
 
-        
+        if Allergen.query.all() == []:
+            allergens = ["Milk", "Eggs", "Fish", "Shellfish" ,"Tree nuts",
+                        "Peanuts", "Wheat", "Soybeans"]
+
+            for allergen in allergens:
+                db_allergen = Allergen(name=allergen)
+                db.session.add(db_allergen)
+            
+            db.session.commit()
