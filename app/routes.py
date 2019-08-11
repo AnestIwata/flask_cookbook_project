@@ -13,7 +13,7 @@ from app.poppulate_database import Poppulate
 @app.route('/index')
 def index():
     Poppulate.poppulate_database()
-    recipes = Recipe.query.all()
+    recipes = Recipe.query.limit(3).all()
     return render_template("index.html", recipes=recipes)
 
 # Login page route
@@ -59,29 +59,37 @@ def add_recipe():
     if current_user.is_authenticated:
         form = RecipeForm()
         form.ingredients.choices = db.session.query(Ingredient.id, Ingredient.name).all()
-        form.ingredients.countries = db.session.query(Country.id, Country.name).all()
+        form.allergens.choices = db.session.query(Allergen.id, Allergen.name).all()
         if form.validate_on_submit():
-            # db_ingredients = []
-            # for ingredient in form.ingredients.data:
-            #     db_ingredients.append(Ingredient.query.filter_by(id=ingredient))
             f = form.image.data
             filename = secure_filename(f.filename)
-            print(filename)
             file_path = os.path.join(app.config['UPLOAD_FOLDER'],  filename)
-            print(file_path)
             f.save(file_path)
-
+            print(form.ingredients.data)
+            
             recipe = Recipe(
                 name=form.name.data, 
                 content=form.content.data, 
                 cuisine=form.cuisine.data,
                 category=form.category.data,
-                # ingredients=form.ingredients.data,
-                # allergens=form.allergens.data,
                 image="static/img/recipes_images/" + filename,
                 author=current_user
             )
-            # f = form.image.data
+
+            ingredients_in_recipe = []
+            for ingredient in form.ingredients.data:
+                queried_ingredient = Ingredient.query.filter_by(id=ingredient).first()
+                ingredients_in_recipe.append(queried_ingredient)
+            print(ingredients_in_recipe)
+            recipe._ingredients=ingredients_in_recipe
+
+            allergens_in_recipe = []
+            for allergen in form.allergens.data:
+                queried_allergen = Allergen.query.filter_by(id=allergen).first()
+                allergens_in_recipe.append(queried_allergen)
+            print(allergens_in_recipe)
+            recipe._allergens=allergens_in_recipe
+
             db.session.add(recipe)
             db.session.commit()
             flash("Congrats, you have added a recipe!")
@@ -99,14 +107,16 @@ def recipe(recipe_name):
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
     form = SearchForm()
-    recipes = Recipe.query.all()
+    recipes = Recipe.query.limit(9).all()
     ingredients = Ingredient.query.all()
     categories = Category.query.all()
     first_three_ingredients = Ingredient.query.limit(3).all()
     allergens = Allergen.query.all()
+    # if form.validate_on_submit():
+
     # Recipe.query.filter(Recipe.ingredients.any(name="wheat flour")).all()
 
-    return render_template("recipes_list.html", title='Recipes', recipes=recipes, categories=categories, 
+    return render_template("recipes_list.html", title='Recipes', recipes=recipes, categories=categories,
                             ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens)
 
 @app.route('/contact', methods=["GET", "POST"])
