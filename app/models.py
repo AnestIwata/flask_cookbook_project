@@ -3,15 +3,17 @@ from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-ingredients = db.Table(
-    'ingredients',
+
+#Association tables for recipe search.
+ingredients_in_recipe = db.Table(
+    '_ingredients',
     db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredient.id')),
     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'))
 )
 
-allergens = db.Table(
-    'allergens',
-    db.Column('allergen_id', db.Integer, db.ForeignKey('allergen_id')),
+allergens_in_recipe = db.Table(
+    '_allergens',
+    db.Column('allergen_id', db.Integer, db.ForeignKey('allergen.id')),
     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'))
 )
 
@@ -32,21 +34,28 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username) 
-    
-        
+
+
 class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
     content = db.Column(db.String(500))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    ingredients = relationship(
-        "Ingredient",
-        secondary=ingredients,
-        back_populates="recipes")
-    allergens = db.relationship('Allergen', backref='may contain')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisine.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    image = db.Column(db.String(64))
+
+    # Many to many relations
+    _ingredients = db.relationship(
+        "Ingredient",
+        secondary=ingredients_in_recipe,
+        back_populates="recipes")
+
+    _allergens = db.relationship(
+        "Allergen",
+        secondary=allergens_in_recipe,
+        back_populates="recipes")
 
     def __repr__(self):
         return '<Recipe {}>'.format(self.name) 
@@ -55,10 +64,10 @@ class Recipe(db.Model):
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    recipes = relationship(
+    recipes = db.relationship(
         "Recipe",
-        secondary=ingredients,
-        back_populates="ingredients")
+        secondary=ingredients_in_recipe,
+        back_populates="_ingredients")
 
     def __repr__(self):
         return '<Ingredient {}>'.format(self.name) 
@@ -67,7 +76,10 @@ class Ingredient(db.Model):
 class Allergen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
-    alergen_recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+    recipes = db.relationship(
+        "Recipe",
+        secondary=allergens_in_recipe,
+        back_populates="_allergens")
 
     def __repr__(self):
         return '<Allergen {}>'.format(self.name) 
