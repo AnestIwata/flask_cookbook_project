@@ -619,7 +619,7 @@ body {
   background: #08a81e;
 }
 footer {
-  margin-top: 40px;
+  margin-top: 250px;
   padding: 50px 0;
   background-color: #333;
 }
@@ -865,5 +865,9 @@ footer .btn {
   .recipe-detail .nutrition-facts div {
     width: 50%;
     margin-bottom: 10px;
+  }
+
+  .login {
+
   }
 }
