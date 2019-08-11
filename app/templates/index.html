@@ -71,21 +71,9 @@
             </div>
 
 
-            <!-- Jinja generate this recipe -->
+            <!-- Jinja will poppulate main page recipes -->
             {% for recipe in recipes %}
-            <div class="col-lg-4 col-sm-6">
-                <div class="box grid recipes">
-                    <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.name }}</div>
-                    <a href="#"><img src="images/recipe2.jpg" alt=""></a>
-                    <h2><a href="#">{{ recipe.name }} </a></h2>
-                    <p>{{ recipe.content }}</p>
-                    <div class="tag">
-                        <a href="#">Milk</a>
-                        <a href="#">Lemon</a>
-                        <a href="#">Sayur</a>
-                    </div>
-                </div>
-            </div>
+                {% include '_recipe.html' %}
             {% endfor %}
 
 
