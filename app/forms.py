@@ -32,16 +32,16 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email.')
 
 class RecipeForm(FlaskForm):
-    name = StringField('Recipe Name', validators=[DataRequired()])
+    name = StringField('Recipe Name:', validators=[DataRequired()])
     content = TextAreaField('Your recipe instructions: ', validators=[Length(min=50, max=5000)])
-    ingredients = SelectMultipleField('Select ingredients', coerce=int, validators=[DataRequired()])
-    allergens = SelectMultipleField('Select allergens', coerce=int, validators=[DataRequired()])
+    ingredients = SelectMultipleField('Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()])
+    allergens = SelectMultipleField('Select allergens (you can select more than one):', coerce=int, validators=[DataRequired()])
     image = FileField('Upload your image: ', validators=[FileRequired()])
-    cuisine = QuerySelectField(u'Choose cuisine', query_factory=Cuisine.get_all_cuisines, get_label='name')
-    category = QuerySelectField(u'Choose category', query_factory=Category.get_all_categories, get_label='name')
-    time_to_prep = IntegerField(u'Time it takes to prepare food', validators=[DataRequired(), NumberRange(min=1, max=48)])
-    cooking_time = IntegerField(u'How long it takes to cook food', validators=[DataRequired(), NumberRange(min=1, max=48)])
-    serves_num_people = IntegerField(u'How many people can it be served for', validators=[DataRequired(), NumberRange(min=1, max=100)])
+    cuisine = QuerySelectField(u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines, get_label='name')
+    category = QuerySelectField(u'Choose category:', query_factory=Category.get_all_categories, get_label='name')
+    time_to_prep = IntegerField(u'Time it takes to prepare food (input number of hours):', validators=[DataRequired(), NumberRange(min=1, max=48)])
+    cooking_time = IntegerField(u'How long it takes to cook food (input number of hours):', validators=[DataRequired(), NumberRange(min=1, max=48)])
+    serves_num_people = IntegerField(u'How many people can it be served for (input a number):', validators=[DataRequired(), NumberRange(min=1, max=100)])
     submit = SubmitField('Submit')
 
 
