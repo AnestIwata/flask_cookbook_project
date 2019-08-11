@@ -2,9 +2,9 @@
 {% block main %}
 <div class="col-lg-4 col-sm-6">
     <div class="box grid recipes">
-        <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.author }}</div>
-        <a href="#"><img src="{{recipe.image}}" alt=""></a>
-        <h2><a href="#">{{ recipe.name }} </a></h2>
+        <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.author.name }}</div>
+        <a href="{{ url_for('recipe', recipe_name=recipe.name) }}"><img src="{{recipe.image}}" alt=""></a>
+        <h2><a href="{{ url_for('recipe', recipe_name=recipe.name) }}">{{ recipe.name }} </a></h2>
         <p>{{ recipe.content | truncate(30) }}</p>
         <div class="tag">
             {% for ingredient in recipe._ingredients %}
