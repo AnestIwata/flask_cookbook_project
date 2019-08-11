@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm
-from app.models import Recipe, User, Ingredient, Country
+from app.models import Recipe, User, Ingredient, Country, Category
 from app.poppulate_database import Poppulate
 
 # Homepage route
@@ -90,7 +90,11 @@ def recipe(recipe_name):
 def recipes_list():
     form = SearchForm()
     recipes = Recipe.query.all()
-    return render_template("recipes_list.html", title='Recipes', recipes=recipes)
+    categories = Category.query.all()
+    ingredients = Ingredient.query.all()
+    first_three_ingredients = Ingredient.query.limit(3).all()
+    return render_template("recipes_list.html", title='Recipes', recipes=recipes, categories=categories, 
+                            ingredients=ingredients, first_three_ingredients=first_three_ingredients)
 
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
