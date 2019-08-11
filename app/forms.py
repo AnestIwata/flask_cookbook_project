@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileRequired
 from wtforms import SelectMultipleField, StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, Email, ValidationError, EqualTo
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
@@ -32,9 +33,10 @@ class RegistrationForm(FlaskForm):
 class RecipeForm(FlaskForm):
     name = StringField('Recipe Name', validators=[DataRequired()])
     content = TextAreaField('Your recipe instructions: ', validators=[Length(min=50, max=5000)])
-    ingredients = SelectMultipleField('Ingredients', coerce=int, validators=[DataRequired()])
-    allergens = StringField('Allergens', validators=[DataRequired()])
-    cuisine = QuerySelectField(u'Cuisine', query_factory=Cuisine.get_all_cuisines, get_label='name')
+    ingredients = SelectMultipleField('Select ingredients', coerce=int, validators=[DataRequired()])
+    allergens = StringField('Select allergens', validators=[DataRequired()])
+    image = FileField('Upload your image: ', validators=[FileRequired()])
+    cuisine = QuerySelectField(u'Choose cuisine', query_factory=Cuisine.get_all_cuisines, get_label='name')
     category = QuerySelectField(u'Choose category', query_factory=Category.get_all_categories, get_label='name')
     submit = SubmitField('Submit')
 
@@ -47,11 +49,11 @@ class ContactForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class SearchForm(FlaskForm):
-    category = SelectField('Category', coerce=int, validators=[DataRequired()], id='select_cuisine')
+    category = SelectField('Category', coerce=int, validators=[DataRequired()], id='select_category')
     ingredients = SelectField('Ingredients', coerce=int, validators=[DataRequired()], id='select_cuisine')
     any_ingredients = SelectField('Recipe needs to have', coerce=int, validators=[DataRequired()], id='select_cuisine')
+    allergens = SelectField('Allergens', coerce=int, validators=[DataRequired()], id='select_allergens')
     search_text = StringField()
     submit = SubmitField('Search Recipes')
-
 
 
