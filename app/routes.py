@@ -1,9 +1,11 @@
+import os
 from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import login_user, logout_user, current_user, login_required
+from werkzeug import secure_filename
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm
-from app.models import Recipe, User, Ingredient, Country, Category
+from app.models import Recipe, User, Ingredient, Country, Category, Allergen
 from app.poppulate_database import Poppulate
 
 # Homepage route
@@ -62,7 +64,13 @@ def add_recipe():
             # db_ingredients = []
             # for ingredient in form.ingredients.data:
             #     db_ingredients.append(Ingredient.query.filter_by(id=ingredient))
-            print(form.cuisine.data)
+            f = form.image.data
+            filename = secure_filename(f.filename)
+            print(filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            print(file_path)
+            f.save(file_path)
+
             recipe = Recipe(
                 name=form.name.data, 
                 content=form.content.data, 
@@ -70,8 +78,10 @@ def add_recipe():
                 category=form.category.data,
                 # ingredients=form.ingredients.data,
                 # allergens=form.allergens.data,
+                image="static/img/recipes_images/" + filename,
                 author=current_user
             )
+            # f = form.image.data
             db.session.add(recipe)
             db.session.commit()
             flash("Congrats, you have added a recipe!")
@@ -86,18 +96,20 @@ def recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     return render_template("recipe.html", recipe=recipe)
 
-@app.route('/recipes_list')
+@app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
     form = SearchForm()
     recipes = Recipe.query.all()
-    categories = Category.query.all()
     ingredients = Ingredient.query.all()
+    categories = Category.query.all()
     first_three_ingredients = Ingredient.query.limit(3).all()
+    allergens = Allergen.query.all()
+    # Recipe.query.filter(Recipe.ingredients.any(name="wheat flour")).all()
+
     return render_template("recipes_list.html", title='Recipes', recipes=recipes, categories=categories, 
-                            ingredients=ingredients, first_three_ingredients=first_three_ingredients)
+                            ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens)
 
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
     form = ContactForm()
     return render_template("contact.html", form=form)
-
