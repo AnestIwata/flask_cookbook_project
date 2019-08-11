@@ -114,12 +114,29 @@ def recipes_list():
     allergens = Allergen.query.all()
     # if form.validate_on_submit():
 
+
     # Recipe.query.filter(Recipe.ingredients.any(name="wheat flour")).all()
 
-    return render_template("recipes_list.html", title='Recipes', recipes=recipes, categories=categories,
+    return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes, categories=categories,
                             ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens)
 
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
     form = ContactForm()
     return render_template("contact.html", form=form)
+
+@app.route('/search_handler', methods=["POST"])
+def search_handler():
+    category_form = request.form.get('category')
+    ingredients_form = request.form.getlist('ingredients[]')
+    allergens_form = request.form.getlist('allergens[]')
+    choose_ingredients = request.form.get('choose_ingredients')
+    recipes = Recipe.query.filter_by(category_id=category_form).all()
+
+    form = SearchForm()
+    ingredients = Ingredient.query.all()
+    categories = Category.query.all()
+    first_three_ingredients = Ingredient.query.limit(3).all()
+    allergens = Allergen.query.all()
+    return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes, categories=categories,
+                            ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens)
