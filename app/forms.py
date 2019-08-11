@@ -39,7 +39,7 @@ class RecipeForm(FlaskForm):
     image = FileField('Upload your image: ', validators=[FileRequired()])
     cuisine = QuerySelectField(u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines, get_label='name')
     category = QuerySelectField(u'Choose category:', query_factory=Category.get_all_categories, get_label='name')
-    time_to_prep = IntegerField(u'Time it takes to prepare food (input number of hours):', validators=[DataRequired(), NumberRange(min=1, max=48)])
+    time_to_prepare = IntegerField(u'Time it takes to prepare food (input number of hours):', validators=[DataRequired(), NumberRange(min=1, max=48)])
     cooking_time = IntegerField(u'How long it takes to cook food (input number of hours):', validators=[DataRequired(), NumberRange(min=1, max=48)])
     serves_num_people = IntegerField(u'How many people can it be served for (input a number):', validators=[DataRequired(), NumberRange(min=1, max=100)])
     submit = SubmitField('Submit')
