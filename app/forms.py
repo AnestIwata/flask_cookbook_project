@@ -1,9 +1,10 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
-from wtforms import SelectMultipleField, StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
-from wtforms.validators import DataRequired, Length, Email, ValidationError, EqualTo
+from wtforms import SelectMultipleField, StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, IntegerField, widgets
+from wtforms.validators import DataRequired, Length, Email, ValidationError, EqualTo, NumberRange
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from app.models import User, Category, Country, Cuisine
+
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -34,10 +35,13 @@ class RecipeForm(FlaskForm):
     name = StringField('Recipe Name', validators=[DataRequired()])
     content = TextAreaField('Your recipe instructions: ', validators=[Length(min=50, max=5000)])
     ingredients = SelectMultipleField('Select ingredients', coerce=int, validators=[DataRequired()])
-    allergens = StringField('Select allergens', validators=[DataRequired()])
+    allergens = SelectMultipleField('Select allergens', coerce=int, validators=[DataRequired()])
     image = FileField('Upload your image: ', validators=[FileRequired()])
     cuisine = QuerySelectField(u'Choose cuisine', query_factory=Cuisine.get_all_cuisines, get_label='name')
     category = QuerySelectField(u'Choose category', query_factory=Category.get_all_categories, get_label='name')
+    time_to_prep = IntegerField(u'Time it takes to prepare food', validators=[DataRequired(), NumberRange(min=1, max=48)])
+    cooking_time = IntegerField(u'How long it takes to cook food', validators=[DataRequired(), NumberRange(min=1, max=48)])
+    serves_num_people = IntegerField(u'How many people can it be served for', validators=[DataRequired(), NumberRange(min=1, max=100)])
     submit = SubmitField('Submit')
 
 
