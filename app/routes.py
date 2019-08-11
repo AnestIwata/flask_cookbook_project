@@ -67,7 +67,7 @@ def add_recipe():
             f = form.image.data
             filename = secure_filename(f.filename)
             print(filename)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'],  filename)
             print(file_path)
             f.save(file_path)
 
