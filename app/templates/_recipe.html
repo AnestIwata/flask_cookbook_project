@@ -2,7 +2,7 @@
 {% block main %}
 <div class="col-lg-4 col-sm-6">
     <div class="box grid recipes">
-        <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.name }}</div>
+        <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.author }}</div>
         <a href="#"><img src="{{recipe.image}}" alt=""></a>
         <h2><a href="#">{{ recipe.name }} </a></h2>
         <p>{{ recipe.content | truncate(30) }}</p>
