@@ -63,14 +63,17 @@ def add_recipe():
         if form.validate_on_submit():
             f = form.image.data
             filename = secure_filename(f.filename)
-            # file_path = os.path.join(app.config['UPLOAD_FOLDER'],  filename)
-            # f.save(file_path)
+            file_path = os.path.join("app/static/img/recipes_images",  filename)
+            f.save(file_path)
             
             recipe = Recipe(
                 name=form.name.data, 
                 content=form.content.data, 
                 cuisine=form.cuisine.data,
                 category=form.category.data,
+                time_to_prepare=form.time_to_prepare.data,
+                serves_num_people=form.serves_num_people.data,
+                cooking_time=form.cooking_time.data,
                 image="static/img/recipes_images/" + filename,
                 author=current_user
             )
