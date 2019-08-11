@@ -4,6 +4,7 @@
 
 
 <!-- Search -->
+<form method='POST' id='category_form' action='{{ url_for("search_handler") }}'>
 <div class="search">
     <div class="container">
         <div class="row">
@@ -13,10 +14,10 @@
                     <div class="col-lg-3">
                         <div class="form-group">
                             <label>Choose category</label>
-                            <select class="js-search-category form-control" name="category" data-placeholder="Choose Category">
+                            <select class="js-search-category form-control" name="category" data-placeholder="Choose Category" form="category_form">
                                 <!-- Jinja for categories in DB -->
                                 {% for category in categories %}
-                                    <option value="1">{{ category.name }}</option>
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
                                 {% endfor %}
                             </select>
             </div>
@@ -24,7 +25,7 @@
         <div class="col-lg-6">
             <div class="form-group">
                 <label>Select one or more ingredients that should be included in recipe</label>
-                <select class="js-search-ingredients form-control" name="ingredients[]" multiple="multiple" data-placeholder="Included Ingredients">
+                <select class="js-search-ingredients form-control" name="ingredients[]" multiple="multiple" data-placeholder="Included Ingredients" form="category_form">
                     <!-- Jinja for ingredients -->
                     {% for ingredient in ingredients %}
                         <option value="{{ ingredient.id }}">{{ ingredient.name }}</option>
@@ -32,7 +33,7 @@
                 </select>
                 <label>Select one or more allergens that shouldn't be included in recipe</label>
                 <select class="js-search-ingredients form-control" name="allergens[]" multiple="multiple" data-placeholder="Without allergens">
-                    <!-- Jinja for ingredients -->
+                    <!-- Jinja for allergens -->
                     {% for allergen in allergens %}
                         <option value="{{ allergen.id }}">{{ allergen.name }}</option>
                     {% endfor %}
@@ -42,7 +43,7 @@
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label>Recipe needs to have</label>
-                                <select class="js-search-category2 form-control" name="category" data-placeholder="Choose Category">
+                                <select class="js-search-category2 form-control" name="choose_ingredients" data-placeholder="Choose Category">
                                     <option value="1">All of selected ingredients </option>
                                     <option value="2">Any of selected ingredients</option>
                                 </select>
@@ -67,21 +68,16 @@
                 <div class="col-lg-12">
                     <h5><i class="fa fa-cutlery" aria-hidden="true"></i> All Recipes</h5>
                 </div>
-
-
-                <!-- Jinja generate this recipe -->
                 {% for recipe in recipes %}
                     {% include '_recipe.html' %}
                 {% endfor %}
-
-
                 <div class="col-lg-12 text-center">
                     <a href="#" class="btn btn-load">Load More</a>
                 </div>
             </div>
         </div>
     </div>
-
+</form>
 
 
 
