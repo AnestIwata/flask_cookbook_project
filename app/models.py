@@ -39,7 +39,10 @@ class Recipe(db.Model):
     name = db.Column(db.String(64), index=True, unique=True)
     content = db.Column(db.String(500))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    ingredients = db.relationship('Ingredient', backref='includes')
+    ingredients = relationship(
+        "Ingredient",
+        secondary=ingredients,
+        back_populates="recipes")
     allergens = db.relationship('Allergen', backref='may contain')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisine.id'))
@@ -52,7 +55,10 @@ class Recipe(db.Model):
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    ingredient_recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+    recipes = relationship(
+        "Recipe",
+        secondary=ingredients,
+        back_populates="ingredients")
 
     def __repr__(self):
         return '<Ingredient {}>'.format(self.name) 
