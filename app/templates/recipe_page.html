@@ -34,7 +34,7 @@
                 </div>
                 
                 
-                    <p>{{ recipe.content }}</p>
+                    <p>{{ short_summary }}</p>
                     <div class="tag">
                         {% for ingredient in recipe._ingredients %}
                             <a href="#">{{ ingredient.name }}</a>
@@ -64,11 +64,9 @@
                             <div class="col-lg-6 col-sm-6">
                                 <h3>Directions</h3>
                                 <ol class="directions">
-                                    {{ recipe.content }}
-                                    <li>Mei latine maluisset constituam ut. Eum vero vocibus at, minim debet deterruisset cum ei. Soluta virtute tibique cu quo, his vivendo suscipit ea. Legere fabulas pro ea.</li>
-                                    <li>An unum soluta eos, audire meliore te nam. Mundi choro sensibus ut vim, ut sed errem ludus tractatos, eu vix fierent definiebas. Ad est autem appareat. Vim ne latine interpretaris, eum sensibus mediocritatem cu. </li>
-                                    <li>Est an etiam cetero fierent. At sit primis evertitur. Est prima electram voluptatum ne. Nec id atqui contentiones mediocritatem, ut mel enim soleat audire, tecripta consequat ea.</li>
-                                    <li>Vidit mutat periculis sed ex, ex mel nihil suscipiantur. Brute noster aeterno et eum, mea et idque primis repudiare.</li>
+                                    {% for step in content %}
+                                        <li>{{ step }}</li>
+                                    {% endfor %}
                                 </ol>
                             </div>
                         </div>
