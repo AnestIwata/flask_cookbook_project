@@ -12,13 +12,15 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
+
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    country = QuerySelectField(u'Country you are from', query_factory=Country.get_all_countries, get_label='name')
+    country = QuerySelectField(
+        u'Country you are from', query_factory=Country.get_all_countries, get_label='name')
     submit = SubmitField('Register')
 
     def validate_username(self, username):
@@ -31,17 +33,26 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please use a different email.')
 
+
 class RecipeForm(FlaskForm):
     name = StringField('Recipe Name:', validators=[DataRequired()])
-    content = TextAreaField('Your recipe instructions: ', validators=[Length(min=50, max=5000)])
-    ingredients = SelectMultipleField('Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()])
-    allergens = SelectMultipleField('Select allergens (you can select more than one):', coerce=int, validators=[DataRequired()])
+    content = TextAreaField('Your recipe instructions: ', validators=[
+                            Length(min=50, max=5000)])
+    ingredients = SelectMultipleField(
+        'Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()])
+    allergens = SelectMultipleField(
+        'Select allergens (you can select more than one):', coerce=int, validators=[DataRequired()])
     image = FileField('Upload your image: ', validators=[FileRequired()])
-    cuisine = QuerySelectField(u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines, get_label='name')
-    category = QuerySelectField(u'Choose category:', query_factory=Category.get_all_categories, get_label='name')
-    time_to_prepare = IntegerField(u'Time it takes to prepare food (input number of hours):', validators=[DataRequired(), NumberRange(min=1, max=48)])
-    cooking_time = IntegerField(u'How long it takes to cook food (input number of hours):', validators=[DataRequired(), NumberRange(min=1, max=48)])
-    serves_num_people = IntegerField(u'How many people can it be served for (input a number):', validators=[DataRequired(), NumberRange(min=1, max=100)])
+    cuisine = QuerySelectField(
+        u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines, get_label='name')
+    category = QuerySelectField(
+        u'Choose category:', query_factory=Category.get_all_categories, get_label='name')
+    time_to_prepare = IntegerField(u'Time it takes to prepare food (input number of hours):', validators=[
+                                   DataRequired(), NumberRange(min=1, max=48)])
+    cooking_time = IntegerField(u'How long it takes to cook food (input number of hours):', validators=[
+                                DataRequired(), NumberRange(min=1, max=48)])
+    serves_num_people = IntegerField(u'How many people can it be served for (input a number):', validators=[
+                                     DataRequired(), NumberRange(min=1, max=100)])
     submit = SubmitField('Submit')
 
 
@@ -52,12 +63,15 @@ class ContactForm(FlaskForm):
     message = TextAreaField('Message: ', validators=[Length(min=10, max=5000)])
     submit = SubmitField('Submit')
 
+
 class SearchForm(FlaskForm):
-    category = SelectField('Category', coerce=int, validators=[DataRequired()], id='select_category')
-    ingredients = SelectField('Ingredients', coerce=int, validators=[DataRequired()], id='select_cuisine')
-    any_ingredients = SelectField('Recipe needs to have', coerce=int, validators=[DataRequired()], id='select_cuisine')
-    allergens = SelectField('Allergens', coerce=int, validators=[DataRequired()], id='select_allergens')
+    category = SelectField('Category', coerce=int, validators=[
+                           DataRequired()], id='select_category')
+    ingredients = SelectField('Ingredients', coerce=int, validators=[
+                              DataRequired()], id='select_cuisine')
+    any_ingredients = SelectField('Recipe needs to have', coerce=int, validators=[
+                                  DataRequired()], id='select_cuisine')
+    allergens = SelectField('Allergens', coerce=int, validators=[
+                            DataRequired()], id='select_allergens')
     search_text = StringField()
     submit = SubmitField('Search Recipes')
-
-
