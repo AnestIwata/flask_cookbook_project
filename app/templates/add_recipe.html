@@ -9,7 +9,18 @@
                 <h1>Add recipe</h1>
             </div>
             <div class="col-lg-8 content">
-                {{ wtf.quick_form(form) }}
+                <div class="form-group">
+                    {{ wtf.quick_form(form) }}
+                    {{ form.name }}
+                    <label>Select one or more ingredients that are included in recipe</label>
+                    <select class="js-search-ingredients form-control" name="ingredients[]" multiple="multiple"
+                        data-placeholder="Included Ingredients" form="category_form">
+                        <!-- Jinja for ingredients -->
+                        {% for ingredient in ingredients %}
+                        <option value="{{ ingredient.name }}">{{ ingredient.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
     </div>
