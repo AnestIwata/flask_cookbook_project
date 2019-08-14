@@ -23,6 +23,10 @@ body {
   background-color: #fff;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
+#list_image {
+  object-fit: cover;
+  height: 300px;
+}
 .navbar .navbar-brand {
   font-weight: bold;
   position: absolute;
