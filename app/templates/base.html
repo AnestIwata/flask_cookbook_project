@@ -35,59 +35,62 @@
 </head>
 
 {% block navbar %}
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container-fluid justify-content-center">
-            <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fa fa-cutlery" aria-hidden="true"></i>Flask Cookbook</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container-fluid justify-content-center">
+        <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fa fa-cutlery" aria-hidden="true"></i>Flask
+            Cookbook</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                    </li>
-                    {% if current_user.is_anonymous %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('recipes_list') }}">Recipes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('contact')  }}">Contact</a>
-                    </li>
-                    <li class="nav-item btn-submit-recipe">
-                        <a class="nav-link" href="{{ url_for('add_recipe')  }}"><i class="fa fa-upload" aria-hidden="true"></i> Submit Recipe</a>
-                    </li>
-                </ul>
-            </div>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                </li>
+                {% if current_user.is_anonymous %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('recipes_list') }}">Recipes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('contact')  }}">Contact</a>
+                </li>
+                <li class="nav-item btn-submit-recipe">
+                    <a class="nav-link" href="{{ url_for('add_recipe')  }}"><i class="fa fa-upload"
+                            aria-hidden="true"></i> Submit Recipe</a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 {% endblock %}
 
 
 {% block content %}
-    <div class="container">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-info" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-info" role="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 
-        {# application content needs to be provided in the app_content block #}
-        {% block app_content %}{% endblock %}
-    </div>
+    {# application content needs to be provided in the app_content block #}
+    {% block app_content %}{% endblock %}
+</div>
 {% endblock %}
 
 {% block footer %}
@@ -109,16 +112,16 @@
         </div>
     </div>
 </footer>
-
 {% endblock %}
 
+{% block scripts %}
 <!-- Javascript -->
 <script src="{{ url_for('static', filename='static/js/plugins/jquery.min.js') }}"></script>
 <script src="{{ url_for('static', filename='static/js/plugins/popper.min.js') }}"></script>
 <script src=" {{ url_for('static', filename='static/js/plugins/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='static/js/plugins/select2.min.js') }}"></script>
 <script src="{{ url_for('static', filename='static/js/plugins/jquery-ui.js') }}"></script>
-
 <script src="{{ url_for('static', filename='static/js/scripts.js') }}"></script>
+{% endblock %}
 
 </html>
