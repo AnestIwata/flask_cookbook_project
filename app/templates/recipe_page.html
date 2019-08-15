@@ -34,7 +34,10 @@
                 </div>
                 
                 
-                    <p>{{ short_summary }}</p>
+                   <div>
+                        <button type="submit" class="btn" id="edit_btn" onClick="{{url_for('edit_recipe', recipe_name=recipe.name)}}">Edit Recipe</button>
+                        <p>{{ short_summary }}</p>
+                    </div> 
                     <div class="tag">
                         {% for ingredient in recipe._ingredients %}
                             <a href="#">{{ ingredient.name }}</a>
