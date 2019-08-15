@@ -6,7 +6,7 @@ from werkzeug import secure_filename
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm
-from app.models import Recipe, User, Ingredient, Country, Category, Allergen
+from app.models import Recipe, User, Ingredient, Country, Category, Allergen, Cuisine
 from app.poppulate_database import Poppulate
 
 # Homepage route
@@ -14,6 +14,7 @@ from app.poppulate_database import Poppulate
 @app.route('/index')
 def index():
     Poppulate.poppulate_database()
+
     recipes = Recipe.query.limit(3).all()
     return render_template("index.html", recipes=recipes)
 
@@ -108,6 +109,54 @@ def add_recipe():
         return redirect(url_for('login'))
     return render_template("add_recipe.html", title='Add Recipe', form=form)
 
+@app.route('/recipe/edit/<recipe_name>')
+def edit_recipe(recipe_name):
+    recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
+    if current_user.is_authenticated and current_user == recipe.author:
+        form = RecipeForm()
+        form.ingredients.choices = db.session.query(
+            Ingredient.id, Ingredient.name).all()
+        form.allergens.choices = db.session.query(
+            Allergen.id, Allergen.name).all()
+        if form.validate_on_submit():
+            f = form.image.data
+            filename = secure_filename(f.filename)
+            file_path = os.path.join(
+                "app/static/img/recipes_images",  filename)
+            f.save(file_path)
+
+            recipe.name=form.name.data,
+            recipe.content=form.content.data,
+            recipe.cuisine=form.cuisine.data,
+            recipe.category=form.category.data,
+            recipe.time_to_prepare=form.time_to_prepare.data,
+            recipe.serves_num_people=form.serves_num_people.data,
+            recipe.cooking_time=form.cooking_time.data,
+            recipe.image="static/img/recipes_images/" + filename,
+            recipe.author=current_user
+
+            ingredients_in_recipe = []
+            for ingredient in form.ingredients.data:
+                queried_ingredient = Ingredient.query.filter_by(
+                    id=ingredient).first()
+                ingredients_in_recipe.append(queried_ingredient)
+            recipe._ingredients = ingredients_in_recipe
+
+            allergens_in_recipe = []
+            for allergen in form.allergens.data:
+                queried_allergen = Allergen.query.filter_by(
+                    id=allergen).first()
+                allergens_in_recipe.append(queried_allergen)
+            recipe._allergens = allergens_in_recipe
+
+            db.session.add(recipe)
+            db.session.commit()
+            flash("Congrats, you have edited a recipe!")
+            return redirect(url_for('recipes_list'))
+    else:
+        flash("You need to login before you edit recipe.")
+        return redirect(url_for('login'))
+    return render_template("add_recipe.html", title='Edit Recipe', form=form)
 
 @app.route('/recipe/<recipe_name>')
 def recipe(recipe_name):
@@ -119,18 +168,15 @@ def recipe(recipe_name):
 
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
-    form = SearchForm()
     recipes = Recipe.query.limit(9).all()
     ingredients = Ingredient.query.all()
     categories = Category.query.all()
+    cuisines = Cuisine.query.all()
     first_three_ingredients = Ingredient.query.limit(3).all()
     allergens = Allergen.query.all()
-    # if form.validate_on_submit():
 
-    # Recipe.query.filter(Recipe.ingredients.any(name="wheat flour")).all()
-
-    return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes, categories=categories,
-                           ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens)
+    return render_template("recipes_list.html", title='Recipes', recipes=recipes, categories=categories,
+                           ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens, cuisines=cuisines)
 
 
 @app.route('/contact', methods=["GET", "POST"])
@@ -156,11 +202,15 @@ def search_handler():
                 queried_recipes = list(
                     set(queried_recipes).intersection(temp_recipes))
         if allergens_form != []:
+            recipes_with_allergens = []
             for allergen in allergens_form:
-                temp_recipes = Recipe.query.filter(
-                    Recipe._allergens.any(Allergen.name == allergen)).all()
-                queried_recipes = list(
-                    set(queried_recipes).intersection(temp_recipes))
+                recipes_with_allergens.extend(Recipe.query.filter(
+                    Recipe._allergens.any(Allergen.id == allergen)).all())
+            print(recipes_with_allergens)
+            print(allergens_form)
+            print(queried_recipes)
+            queried_recipes = set(queried_recipes) - set(recipes_with_allergens)
+            print(queried_recipes)
 
     queried_recipes = list(set(queried_recipes))
     form = SearchForm()
