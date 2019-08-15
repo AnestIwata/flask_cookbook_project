@@ -23,6 +23,13 @@ body {
   background-color: #fff;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
+#edit_btn {
+  margin-top: 13px;
+  padding: 10px;
+  color: #fff;
+  border-radius: 4px;
+  background-color: #08a81e;
+}
 #list_image {
   object-fit: cover;
   height: 300px;
