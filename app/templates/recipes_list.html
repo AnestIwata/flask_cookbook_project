@@ -11,7 +11,7 @@
                 <div class="col-lg-12">
                     <h2>Browse Recipes</h2>
                     <div class="row">
-                        <div class="col-lg-3">
+                        <div class="col-lg-6">
                             <div class="form-group">
                                 <label>Choose category</label>
                                 <select class="js-search-category form-control" name="category"
@@ -25,28 +25,40 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
+                                <label>Choose cuisine</label>
+                                <select class="js-search-category form-control" name="category"
+                                    data-placeholder="Choose Cuisine" form="category_form">
+                                    <!-- Jinja for categories in DB -->
+                                    {% for cuisine in cuisines %}
+                                    <option value="{{ cuisine.id }}">{{ cuisine.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
                                 <label>Select one or more ingredients that should be included in recipe</label>
                                 <select class="js-search-ingredients form-control" name="ingredients[]"
                                     multiple="multiple" data-placeholder="Included Ingredients" form="category_form">
-                                    <!-- Jinja for ingredients -->
                                     {% for ingredient in ingredients %}
                                     <option value="{{ ingredient.name }}">{{ ingredient.name }}</option>
                                     {% endfor %}
                                 </select>
+                            </div>
+                            <div class="form-group">
                                 <label>Select one or more allergens that shouldn't be included in recipe</label>
                                 <select class="js-search-ingredients form-control" name="allergens[]"
                                     multiple="multiple" data-placeholder="Without allergens">
-                                    <!-- Jinja for allergens -->
                                     {% for allergen in allergens %}
                                     <option value="{{ allergen.id }}">{{ allergen.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-lg-6">
                             <div class="form-group">
                                 <label>Recipe needs to have</label>
-                                <select class="js-search-category2 form-control" name="choose_ingredients"
+                                <select class="js-search-category form-control" name="choose_ingredients"
                                     data-placeholder="Choose Category">
                                     <option value="1">All of selected ingredients </option>
                                     <option value="2">Any of selected ingredients</option>
