@@ -8,4 +8,5 @@ class Config(object):
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.path.abspath("app/static/img/recipes_images")
+    RECIPES_PER_PAGE = 9
     # LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
