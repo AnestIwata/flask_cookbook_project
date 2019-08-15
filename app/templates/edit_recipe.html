@@ -1,1 +1,28 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<div class="page add_recipe">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12 title text-center">
+                <h1>Add recipe</h1>
+            </div>
+            <div class="col-lg-8 content">
+                <div class="form-group">
+                    {{ wtf.quick_form(form) }}
+                    {{ form.name }}
+                    <label>Select one or more ingredients that are included in recipe</label>
+                    <select class="js-search-ingredients form-control" name="ingredients[]" multiple="multiple"
+                        data-placeholder="Included Ingredients" form="category_form">
+                        <!-- Jinja for ingredients -->
+                        {% for ingredient in ingredients %}
+                        <option value="{{ ingredient.name }}">{{ ingredient.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
