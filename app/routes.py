@@ -68,6 +68,7 @@ def add_recipe():
         form.allergens.choices = db.session.query(
             Allergen.id, Allergen.name).all()
         if form.validate_on_submit():
+            print("Recipe almsot added")
             f = form.image.data
             filename = secure_filename(f.filename)
             file_path = os.path.join(
@@ -99,11 +100,16 @@ def add_recipe():
                     id=allergen).first()
                 allergens_in_recipe.append(queried_allergen)
             recipe._allergens = allergens_in_recipe
-
+            print("Recipe almsot added")
             db.session.add(recipe)
             db.session.commit()
+            print("Recipe added")
             flash("Congrats, you have added a recipe!")
             return redirect(url_for('recipes_list'))
+        else:
+            print("Something has failed")
+            flash("Something has failed")
+            
     else:
         flash("You need to login before you add recipe.")
         return redirect(url_for('login'))

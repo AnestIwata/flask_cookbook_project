@@ -20,7 +20,7 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     country = QuerySelectField(
-        u'Country you are from', query_factory=Country.get_all_countries, get_label='name')
+        u'Where are you from?', query_factory=Country.get_all_countries, get_label='name')
     submit = SubmitField('Register')
 
     def validate_username(self, username):
@@ -39,9 +39,11 @@ class RecipeForm(FlaskForm):
     content = TextAreaField('Your recipe instructions: ', validators=[
                             Length(min=50, max=5000)])
     ingredients = SelectMultipleField(
-        'Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()])
+        'Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()],
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
     allergens = SelectMultipleField(
-        'Select allergens (you can select more than one):', coerce=int, validators=[DataRequired()])
+        'Select allergens (you can select more than one):', coerce=int, validators=[DataRequired()],
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
     image = FileField('Upload your image: ', validators=[FileRequired()])
     cuisine = QuerySelectField(
         u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines, get_label='name')

@@ -9,18 +9,63 @@
                 <h1>Add recipe</h1>
             </div>
             <div class="col-lg-8 content">
-                <div class="form-group">
-                    {{ wtf.quick_form(form) }}
-                    {{ form.name }}
-                    <label>Select one or more ingredients that are included in recipe</label>
-                    <select class="js-search-ingredients form-control" name="ingredients[]" multiple="multiple"
-                        data-placeholder="Included Ingredients" form="category_form">
-                        <!-- Jinja for ingredients -->
-                        {% for ingredient in ingredients %}
-                        <option value="{{ ingredient.name }}">{{ ingredient.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                <form method='POST' id='category_form'>
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        <br>
+                        <div class="form-group required">
+                            {{ form.name.label }}
+                            {{ form.name(class_="form-control") }}
+                        </div>
+                        <div class="form-group required">
+                            {{ form.content.label}}
+                            {{ form.content(class_="form-control") }}
+                        </div>
+                        <div class="form-group required">
+                            {{ form.cuisine.label }}
+                            {{ form.cuisine(class_="form-control") }}
+                        </div>
+                        <div class="form-group required">
+                            {{ form.category.label }}
+                            {{ form.category(class_="form-control") }}
+                        </div>
+                        <div class="form-group required">
+                            {{ form.image.label }}
+                            {{ form.image() }}
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-6">
+                                    {{ form.ingredients.label }}
+                                    {{ form.ingredients }}
+    
+                            </div>
+                            <div class="form-group col-lg-6">
+                                    {{ form.allergens.label }}
+                                    {{ form.allergens }}
+    
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group required col-lg-4">
+                                {{ form.time_to_prepare.label }}
+                                {{ form.time_to_prepare(class_="form-control") }}
+                            </div>
+                            <div class="form-group required col-lg-4">
+                                {{ form.cooking_time.label }}
+                                {{ form.cooking_time(class_="form-control") }}
+                            </div>
+                            <div class="form-group required col-lg-4">
+                                {{ form.serves_num_people.label }}
+                                {{ form.serves_num_people(class_="form-control") }}
+                            </div>
+                        </div>
+
+                        <div>
+                            {{ form.submit }}
+                        </div>
+                        
+                    </div>
+                </form>
             </div>
         </div>
     </div>
