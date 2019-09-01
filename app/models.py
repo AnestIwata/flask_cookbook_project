@@ -44,7 +44,7 @@ def load_user(id):
 class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
-    content = db.Column(db.String(2000))
+    content = db.Column(db.String(50000))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisine.id'))
