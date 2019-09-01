@@ -11,7 +11,6 @@
             <div class="col-lg-8 content">
                 <form method='POST' id='category_form' enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
-                    {{ form.csrf_token }}
                     <div class="form-group">
                         <br>
                         <div class="form-group required">
@@ -41,7 +40,7 @@
                             </div>
                             <div class="form-group col-lg-6">
                                 {{ form.allergens.label }}
-                                {{ form.allergens }}
+                                {{ form.allergens(multiple="") }}
                             </div>
                         </div>
                         <div class="container"></div>
