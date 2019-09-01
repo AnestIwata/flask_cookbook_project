@@ -49,10 +49,16 @@ class Recipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisine.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    nutrition = db.relationship('NutritionFacts', backref='recipe', lazy='dynamic')
+    calories = db.Column(db.Integer)
+    carbohydrates = db.Column(db.Integer)
+    proteins = db.Column(db.Integer)
+    fats = db.Column(db.Integer)
+    cholesterol = db.Column(db.Integer)
     serves_num_people = db.Column(db.Integer)
     time_to_prepare = db.Column(db.Integer)
     cooking_time = db.Column(db.Integer)
-    image = db.Column(db.String(64))
+    image = db.Column(db.String(128))
 
     # Many to many relations
     _ingredients = db.relationship(
@@ -68,6 +74,20 @@ class Recipe(db.Model):
     def __repr__(self):
         return '<Recipe {}>'.format(self.name)
 
+class NutritionFacts(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    calories = db.Column(db.Integer)
+    carbohydrates = db.Column(db.Integer)
+    proteins = db.Column(db.Integer)
+    fats = db.Column(db.Integer)
+    cholesterol = db.Column(db.Integer)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+
+    def __repr__(self):
+        return '<NutritionFacts {}>'.format(self.name)
+
+    def get_all_countries():
+        return NutritionFacts.query
 
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -79,6 +99,9 @@ class Ingredient(db.Model):
 
     def __repr__(self):
         return '<Ingredient {}>'.format(self.name)
+
+    def get_all_ingredients():
+        return Ingredient.query.all()
 
 
 class Allergen(db.Model):
@@ -92,17 +115,9 @@ class Allergen(db.Model):
     def __repr__(self):
         return '<Allergen {}>'.format(self.name)
 
+    def get_all_allergens():
+        return Allergen.query.all()
 
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
-    recipes = db.relationship('Recipe', backref='category', lazy='dynamic')
-
-    def __repr__(self):
-        return '<Category {}>'.format(self.name)
-
-    def get_all_categories():
-        return Category.query
 
 
 class Country(db.Model):
@@ -116,6 +131,19 @@ class Country(db.Model):
     def get_all_countries():
         return Country.query
 
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    recipes = db.relationship('Recipe', backref='category', lazy='dynamic')
+
+    def __repr__(self):
+        return '<Category {}>'.format(self.name)
+
+    def get_all_categories():
+        return Category.query
+        
+    def get_all_categories_except_all():
+        return Category.query.filter(Category.name!="All").all()
 
 class Cuisine(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -127,3 +155,6 @@ class Cuisine(db.Model):
 
     def get_all_cuisines():
         return Cuisine.query
+
+    def get_all_cuisines_except_all():
+        return Cuisine.query.filter(Cuisine.name!="All").all()

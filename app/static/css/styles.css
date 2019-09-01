@@ -34,6 +34,11 @@ body {
   object-fit: cover;
   height: 300px;
 }
+
+#page_image {
+  object-fit: cover;
+  height: 700px;
+}
 .navbar .navbar-brand {
   font-weight: bold;
   position: absolute;
@@ -428,6 +433,11 @@ body {
 .submit .content .box .fa-times-circle-o:hover {
   color: #08a81e;
 }
+.sort-select {
+  float:right;
+  width:130px;
+  margin-bottom: 20px;
+}
 .recipe-detail {
   padding: 120px 0;
 }
@@ -659,53 +669,7 @@ footer .btn {
   background-color: #08a81e;
   color: #fff;
 }
-.copyright {
-  font-size: 0.9rem;
-  padding: 15px 0;
-  background-color: #212121;
-}
-.copyright a {
-  color: #858585;
-}
-.copyright i {
-  color: #f44336;
-}
-.demo h1 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #333;
-}
-.demo p {
-  margin-bottom: 50px;
-}
-.demo .box {
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  border: 1px solid #dedede;
-  margin-bottom: 30px;
-  position: relative;
-}
-.demo .box:hover {
-  opacity: 0.9;
-}
-.demo .box img {
-  width: 100%;
-}
-.demo .box .title {
-  background-color: #08a81e;
-  color: #fff;
-  padding: 10px;
-  text-align: center;
-  font-size: 0.8rem;
-}
-.demo .box .status {
-  position: absolute;
-  right: -15px;
-  top: -20px;
-  background-color: #feca2f;
-  padding: 20px 15px;
-  border-radius: 50px;
-  color: #000;
-}
+
 /* Large Devices, Wide Screens */
 /* Medium Devices, Desktops */
 @media only screen and (max-width: 992px) {

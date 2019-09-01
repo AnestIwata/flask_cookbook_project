@@ -9,8 +9,9 @@
                 <h1>Add recipe</h1>
             </div>
             <div class="col-lg-8 content">
-                <form method='POST' id='category_form'>
+                <form method='POST' id='category_form' enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
+                    {{ form.csrf_token }}
                     <div class="form-group">
                         <br>
                         <div class="form-group required">
@@ -29,20 +30,42 @@
                             {{ form.category.label }}
                             {{ form.category(class_="form-control") }}
                         </div>
-                        <div class="form-group required">
+                        <div class="form-group">
                             {{ form.image.label }}
-                            {{ form.image() }}
+                            {{ form.image }}
                         </div>
                         <div class="row">
                             <div class="form-group col-lg-6">
-                                    {{ form.ingredients.label }}
-                                    {{ form.ingredients }}
-    
+                                {{ form.ingredients.label }}
+                                {{ form.ingredients(multiple="") }}
                             </div>
                             <div class="form-group col-lg-6">
-                                    {{ form.allergens.label }}
-                                    {{ form.allergens }}
-    
+                                {{ form.allergens.label }}
+                                {{ form.allergens }}
+                            </div>
+                        </div>
+                        <div class="container"></div>
+                        <div class="row">
+                            <div class="form-group required col-lg-4">
+                                {{ form.calories.label }}
+                                {{ form.calories(class_="form-control") }}
+                            </div>
+                            <div class="form-group required col-lg-4">
+                                    {{ form.carbohydrates.label }}
+                                    {{ form.carbohydrates(class_="form-control") }}
+                            </div>
+                            <div class="form-group required col-lg-4">
+                                {{ form.proteins.label }}
+                                {{ form.proteins(class_="form-control") }}
+                            </div>
+                            <div class="form-group required col-lg-6">
+                                {{ form.fats.label }}
+                                {{ form.fats(class_="form-control") }}
+                            </div>
+                            <div class="form-group required col-lg-6">
+                                {{ form.cholesterol.label }}
+                                {{ form.cholesterol(class_="form-control") }}
+                            </div>
                             </div>
                         </div>
                         <div class="row">
@@ -59,10 +82,12 @@
                                 {{ form.serves_num_people(class_="form-control") }}
                             </div>
                         </div>
-
                         <div>
                             {{ form.submit }}
                         </div>
+                        {% if form.errors %}
+                            {{ form.errors }}
+                        {% endif %}
                         
                     </div>
                 </form>

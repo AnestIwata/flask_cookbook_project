@@ -46,16 +46,23 @@ class RecipeForm(FlaskForm):
         render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
     image = FileField('Upload your image: ', validators=[FileRequired()])
     cuisine = QuerySelectField(
-        u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines, get_label='name')
+        u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines_except_all, get_label='name')
     category = QuerySelectField(
-        u'Choose category:', query_factory=Category.get_all_categories, get_label='name')
-    time_to_prepare = IntegerField(u'Time it takes to prepare food (input number of hours):', validators=[
+        u'Choose category:', query_factory=Category.get_all_categories_except_all, get_label='name')
+    time_to_prepare = IntegerField(u'Time it takes to prepare food (input number of minutes):', validators=[
                                    DataRequired(), NumberRange(min=1, max=48)])
     cooking_time = IntegerField(u'How long it takes to cook food (input number of hours):', validators=[
                                 DataRequired(), NumberRange(min=1, max=48)])
     serves_num_people = IntegerField(u'How many people can it be served for (input a number):', validators=[
                                      DataRequired(), NumberRange(min=1, max=100)])
+    calories = IntegerField(u'Calories:', validators=[DataRequired()])
+    carbohydrates = IntegerField(u'Carbohydrates:', validators=[DataRequired()])
+    proteins = IntegerField(u'Proteins:', validators=[DataRequired()])
+    fats = IntegerField(u'Fats:', validators=[DataRequired()])
+    cholesterol = IntegerField(u'Cholesterol:', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+
 
 
 class ContactForm(FlaskForm):

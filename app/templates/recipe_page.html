@@ -11,113 +11,98 @@
                 <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.author.name }}</div>
             </div>
             <div class="col-lg-8">
-                
-                
-                <img src="{{ url_for('static', filename=recipe.image) }}" alt="Image of the Dish">
-                
-                
+
+
+                <img src="{{ url_for('static', filename=recipe.image) }}" alt="Image of the Dish" id="page_image">
+
+
                 <div class="info">
                     <div class="row">
                         <div class="col-lg-4 col-sm-4">
                             <p>Serves:</p>
-                            <p><strong><i class="fa fa-users" aria-hidden="true"></i>{{ recipe.serves_num_people }} people</strong></p>
+                            <p><strong><i class="fa fa-users" aria-hidden="true"></i>{{ recipe.serves_num_people }}
+                                    people</strong></p>
                         </div>
                         <div class="col-lg-4 col-sm-4">
                             <p>Prep Time:</p>
-                            <p><strong><i class="fa fa-clock-o" aria-hidden="true"></i>{{ recipe.time_to_prepare }} min</strong></p>
+                            <p><strong><i class="fa fa-clock-o" aria-hidden="true"></i>{{ recipe.time_to_prepare }}
+                                    min</strong></p>
                         </div>
                         <div class="col-lg-4 col-sm-4">
                             <p>Cooking:</p>
-                            <p><strong><i class="fa fa-clock-o" aria-hidden="true"></i>{{ recipe.cooking_time }} Hour</strong></p>
+                            <p><strong><i class="fa fa-clock-o" aria-hidden="true"></i>{{ recipe.cooking_time }}
+                                    Hour</strong></p>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn col-lg-12 col-sm-4" id="edit_btn"
+                            onClick="{{url_for('edit_recipe', recipe_name=recipe.name)}}">
+                            <a href="{{url_for('edit_recipe', recipe_name=recipe.name)}}" class="btn btn-default">
+                                <p>Edit Recipe</p>
+                            </a>
+                        </button>
+                    </div>
+                </div>
+                <div>
+
+                    <p>{{ short_summary }}</p>
+                </div>
+                <div class="tag">
+                    {% for ingredient in recipe._ingredients %}
+                    <a href="#">{{ ingredient.name }}</a>
+                    {% endfor %}
+                </div>
+
+                <div class="ingredient-direction">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-6">
+                            <h3>Ingredients</h3>
+                            <ul class="ingredients">
+                                {% for ingredient in recipe._ingredients %}
+                                <li>
+                                    {{ ingredient.name }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            <h3>Allergens</h3>
+                            <ul class="ingredients">
+                                {% for allergen in recipe._allergens %}
+                                <li>
+                                    {{ allergen.name }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            <h3>Information</h3>
+                            <ul class="ingredients">
+                                <li>Cuisine: <b>{{ recipe.cuisine.name }}</b></li>
+                                <li>Category: <b>{{ recipe.category.name }}</b></li>
+                                <li>Author: <b>{{ recipe.author.username }}</b></li>
+                                <li>Where is author from: <br><b>{{ recipe.author.country.name }}</b></li>
+
+                            </ul>
+                        </div>
+                        <div class="col-lg-6 col-sm-6">
+                            <h3>Directions</h3>
+                            <ol class="directions">
+                                {% for step in content %}
+                                <li>{{ step }}</li>
+                                {% endfor %}
+                            </ol>
                         </div>
                     </div>
                 </div>
-                
-                
-                   <div>
-                        <button type="button" class="btn" id="edit_btn" onClick="{{url_for('edit_recipe', recipe_name=recipe.name)}}">Edit Recipe</button>
-                        <p>{{ short_summary }}</p>
-                    </div> 
-                    <div class="tag">
-                        {% for ingredient in recipe._ingredients %}
-                            <a href="#">{{ ingredient.name }}</a>
-                        {% endfor %}
-                    </div>
-                    
-                    <div class="ingredient-direction">
-                        <div class="row">
-                            <div class="col-lg-6 col-sm-6">
-                                <h3>Ingredients</h3>
-                                <ul class="ingredients">
-                                    {% for ingredient in recipe._ingredients %}
-                                    <li>
-                                        {{ ingredient.name }}
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                                <h3>Allergens</h3>
-                                <ul class="ingredients">
-                                    {% for allergen in recipe._allergens %}
-                                    <li>
-                                        {{ allergen.name }}
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                                <h3>Information</h3>
-                                <ul class="ingredients">
-                                    <li>Cuisine: <b>{{ recipe.cuisine.name }}</b></li>
-                                    <li>Category: <b>{{ recipe.category.name }}</b></li>
-                                    <li>Author: <b>{{ recipe.author.username }}</b></li>
-                                    <li>Where is author from: <br><b>{{ recipe.author.country.name }}</b></li>
 
-                                </ul>
-                            </div>
-                            <div class="col-lg-6 col-sm-6">
-                                <h3>Directions</h3>
-                                <ol class="directions">
-                                    {% for step in content %}
-                                        <li>{{ step }}</li>
-                                    {% endfor %}
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
-                    
-                    <div class="nutrition-facts clearfix">
-                        <h3>Nutrition Facts</h3>
-                        <div>
-                            <p>Calories:</p>
-                            <p><strong>632 kcal</strong></p>
-                        </div>
-                        <div>
-                            <p>Carbohydrate:</p>
-                            <p><strong>37 g</strong></p>
-                        </div>
-                        <div>
-                            <p>Fat:</p>
-                            <p><strong>92 g</strong></p>
-                        </div>
-                        <div>
-                            <p>Protein:</p>
-                            <p><strong>63 g</strong></p>
-                        </div>
-                        <div>
-                            <p>Cholesterol:</p>
-                            <p><strong>0 mg</strong></p>
-                        </div>
-                        
-                    </div>
-                    
-                    {% include '_comments.html' %}
 
-                    {% include '_reply.html' %}
-                        
-                    </div>
-                    
-                </div>
+                {% include "_nutrition_facts.html" %}
+
+                {% include '_comments.html' %}
+
+                {% include '_reply.html' %}
+
             </div>
+
         </div>
     </div>
+</div>
+</div>
 {% endblock %}
