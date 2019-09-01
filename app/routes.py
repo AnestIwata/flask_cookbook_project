@@ -1,4 +1,5 @@
 import os, re, sys
+from datetime import datetime 
 from flask import Flask, flash, redirect, render_template, request, url_for, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
@@ -58,12 +59,12 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-@app.route('/translate', methods=['POST'])
+@app.route('/fetch_recipes', methods=["GET", "POST"])
 @login_required
-def fetch_recipes():
-    return jsonify({'text': translate(request.form['text'],
-                                      request.form['source_language'],
-                                      request.form['dest_language'])})
+def fetch_recipes(recipes):
+    recipes_comprehension = [datetime.date(*[int(y) for y in x.split("-")]) for x in recipes]
+    sorted_recipes = sorted(recipes_comprehension)
+    return sorted_recipes
 
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
@@ -218,7 +219,9 @@ def recipe(recipe_name):
 def recipes_list():
     page = request.args.get('page', 1, type=int)
     recipes = Recipe.query.paginate(
-        page, 9, False)
+        page, 3, False)
+    next_url = url_for('recipes_list', page=recipes.next_num) if recipes.has_next else None
+    prev_url = url_for('recipes_list', page=recipes.prev_num) if recipes.has_prev else None
     ingredients = Ingredient.query.all()
     categories = Category.query.all()
     cuisines = Cuisine.query.all()
@@ -226,7 +229,8 @@ def recipes_list():
     allergens = Allergen.query.all()
 
     return render_template("recipes_list.html", title='Recipes', recipes=recipes.items, categories=categories,
-                            ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens, cuisines=cuisines)
+                            ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens, 
+                            cuisines=cuisines, next_url=next_url,prev_url=prev_url)
 
 
 @app.route('/contact', methods=["GET", "POST"])
@@ -241,7 +245,8 @@ def search_handler():
     ingredients_form = request.form.getlist('ingredients[]')
     allergens_form = request.form.getlist('allergens[]')
     choose_ingredients = request.form.get('choose_ingredients')
-
+    sort_by = request.form.get('sort_by')
+    print(sort_by)
     if category_form != 1:
         queried_recipes = Recipe.query.filter_by(
             category_id=category_form).all()
