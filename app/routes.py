@@ -16,7 +16,12 @@ def index():
     Poppulate.poppulate_database()
 
     recipes = Recipe.query.limit(3).all()
-    return render_template("index.html", recipes=recipes)
+    empty = False
+    print(recipes)
+    if not recipes:
+        empty=True
+
+    return render_template("index.html", recipes=recipes, empty=empty, homepage=True)
 
 # Login page route
 @app.route('/login', methods=["GET", "POST"])
@@ -201,6 +206,20 @@ def edit_recipe(recipe_name):
     return render_template("edit_recipe.html", title='Edit Recipe', form=form, recipe=recipe)
 
 
+@app.route('/delete_recipe/<recipe_name>')
+def delete_recipe(recipe_name):
+    recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
+    db.session.delete(recipe)
+    try:
+        db.session.delete(recipe)
+        db.session.commit()
+    except:
+        print("There was an error while deleting recipe.")
+        flash("There was an error while deleting recipe.")
+        return redirect(url_for('index'))
+    flash("Your recipe has been deleted.")
+    return redirect(url_for('recipes_list'))
+
 @app.route('/recipe/<recipe_name>')
 def recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
@@ -212,16 +231,20 @@ def recipe(recipe_name):
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
     form = form_ingredients_and_allergens(SearchForm())
-
     page = request.args.get('page', 1, type=int)
-    recipes = Recipe.query.paginate(
-        page, 3, False)
+    recipes = Recipe.query.paginate(page, 3, False)
+    empty = False
+    print(recipes)
+    if not recipes.items:
+        print("Somethin")
+        empty = True
+
     next_url = url_for('recipes_list', page=recipes.next_num) if recipes.has_next else None
     prev_url = url_for('recipes_list', page=recipes.prev_num) if recipes.has_prev else None
     form.any_ingredients.choices = ["All of selected ingredients", "Any of selected ingredients"]
 
     return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes.items,
-        next_url=next_url,prev_url=prev_url)
+        next_url=next_url, prev_url=prev_url, empty=empty)
 
 
 @app.route('/contact', methods=["GET", "POST"])
