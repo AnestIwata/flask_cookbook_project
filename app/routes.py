@@ -1,4 +1,4 @@
-import os, re, sys
+import os, re, json 
 from datetime import datetime 
 from flask import Flask, flash, redirect, render_template, request, url_for, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
@@ -59,21 +59,19 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-@app.route('/fetch_recipes', methods=["GET", "POST"])
+@app.route('/fetch_recipes/', methods=["GET", "POST"])
 @login_required
-def fetch_recipes(recipes):
-    recipes_comprehension = [datetime.date(*[int(y) for y in x.split("-")]) for x in recipes]
-    sorted_recipes = sorted(recipes_comprehension)
-    return sorted_recipes
+def fetch_recipes():
+    recipes_comprehension = Recipe.query.all()
+    # recipes_comprehension = [datetime.date(*[int(y) for y in x.split("-")]) for x in recipes]
+    # sorted_recipes = sorted(recipes_comprehension)
+    print(recipes_comprehension)
+    return jsonify(new_recipes=[recipe.serialize() for recipe in recipes_comprehension])
 
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
     if current_user.is_authenticated:
-        form = RecipeForm()
-        form.ingredients.choices = db.session.query(
-            Ingredient.id, Ingredient.name).all()
-        form.allergens.choices = db.session.query(
-            Allergen.id, Allergen.name).all()
+        form = form_ingredients_and_allergens(RecipeForm())
         if form.validate_on_submit():
             f = form.image.data
             print(form.image.data)
@@ -149,11 +147,7 @@ def add_recipe():
 def edit_recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     if current_user.is_authenticated and current_user == recipe.author:
-        form = RecipeForm(obj=recipe)
-        form.ingredients.choices = db.session.query(
-            Ingredient.id, Ingredient.name).all()
-        form.allergens.choices = db.session.query(
-            Allergen.id, Allergen.name).all()
+        form = form_ingredients_and_allergens(RecipeForm(obj=recipe))
         if form.validate_on_submit():
             f = form.image.data
             filename = secure_filename(f.filename)
@@ -217,20 +211,17 @@ def recipe(recipe_name):
 
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
+    form = form_ingredients_and_allergens(SearchForm())
+
     page = request.args.get('page', 1, type=int)
     recipes = Recipe.query.paginate(
         page, 3, False)
     next_url = url_for('recipes_list', page=recipes.next_num) if recipes.has_next else None
     prev_url = url_for('recipes_list', page=recipes.prev_num) if recipes.has_prev else None
-    ingredients = Ingredient.query.all()
-    categories = Category.query.all()
-    cuisines = Cuisine.query.all()
-    first_three_ingredients = Ingredient.query.limit(3).all()
-    allergens = Allergen.query.all()
+    form.any_ingredients.choices = ["All of selected ingredients", "Any of selected ingredients"]
 
-    return render_template("recipes_list.html", title='Recipes', recipes=recipes.items, categories=categories,
-                            ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens, 
-                            cuisines=cuisines, next_url=next_url,prev_url=prev_url)
+    return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes.items,
+        next_url=next_url,prev_url=prev_url)
 
 
 @app.route('/contact', methods=["GET", "POST"])
@@ -277,3 +268,10 @@ def search_handler():
     allergens = Allergen.query.all()
     return render_template("recipes_list.html", form=form, recipes=queried_recipes, categories=categories, cuisines=cuisines,
                            ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens)
+
+def form_ingredients_and_allergens(form):
+    form.ingredients.choices = db.session.query(
+        Ingredient.id, Ingredient.name).all()
+    form.allergens.choices = db.session.query(
+        Allergen.id, Allergen.name).all()
+    return form
