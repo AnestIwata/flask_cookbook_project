@@ -1,5 +1,5 @@
 {% block main %}
-<div class="col-lg-4 col-sm-6">
+<div id="recipe{{ recipe.id }}" class="col-lg-4 col-sm-6">
     <div class="box grid recipes">
         <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.author.username }}</div>
         <a href="{{ url_for('recipe', recipe_name=recipe.name) }}"><img src="{{recipe.image}}" id="list_image"
