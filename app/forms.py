@@ -46,9 +46,11 @@ class RecipeForm(FlaskForm):
         render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
     image = FileField('Upload your image: ', validators=[FileRequired()])
     cuisine = QuerySelectField(
-        u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines_except_all, get_label='name')
+        u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines_except_all, get_label='name',
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
     category = QuerySelectField(
-        u'Choose category:', query_factory=Category.get_all_categories_except_all, get_label='name')
+        u'Choose category:', query_factory=Category.get_all_categories_except_all, get_label='name',
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
     time_to_prepare = IntegerField(u'Time it takes to prepare food (input number of minutes):', validators=[
                                    DataRequired(), NumberRange(min=1, max=48)])
     cooking_time = IntegerField(u'How long it takes to cook food (input number of hours):', validators=[
@@ -74,13 +76,19 @@ class ContactForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    category = SelectField('Category', coerce=int, validators=[
-                           DataRequired()], id='select_category')
-    ingredients = SelectField('Ingredients', coerce=int, validators=[
-                              DataRequired()], id='select_cuisine')
+    cuisine = QuerySelectField(
+        u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines_except_all, get_label='name',
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
+    category = QuerySelectField(
+        u'Choose category:', query_factory=Category.get_all_categories_except_all, get_label='name',
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
+    ingredients = SelectMultipleField(
+        'Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()],
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
+    allergens = SelectMultipleField(
+        'Select allergens (you can select more than one):', coerce=int, validators=[DataRequired()],
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
     any_ingredients = SelectField('Recipe needs to have', coerce=int, validators=[
-                                  DataRequired()], id='select_cuisine')
-    allergens = SelectField('Allergens', coerce=int, validators=[
-                            DataRequired()], id='select_allergens')
+                                  DataRequired()])
     search_text = StringField()
     submit = SubmitField('Search Recipes')
