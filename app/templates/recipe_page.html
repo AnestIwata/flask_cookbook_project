@@ -34,14 +34,13 @@
                                     Hour</strong></p>
                         </div>
                     </div>
-                    <div>
-                        <button type="button" class="btn col-lg-12 col-sm-4" id="edit_btn"
-                            onClick="{{url_for('edit_recipe', recipe_name=recipe.name)}}">
-                            <a href="{{url_for('edit_recipe', recipe_name=recipe.name)}}" class="btn btn-default">
-                                <p>Edit Recipe</p>
-                            </a>
-                        </button>
-                    </div>
+                </div>
+                <div>
+                    <button type="button" id="edit_btn" class="btn btn-default" >
+                        <a href="{{url_for('edit_recipe', recipe_name=recipe.name)}}" >
+                            Edit Recipe
+                        </a>
+                    </button>
                 </div>
                 <div>
 
