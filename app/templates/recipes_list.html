@@ -82,6 +82,23 @@
 
 </form>
 
+<!-- Load more recipes -->
+{% if next_url %}
+<div class="col-lg-12 text-center">
+    {% if next_url %}
+    <button class="btn btn-load">
+        <a href="{{ next_url }}" class="btn btn-load">Next Page</a>
+    </button>
+    {% endif %}
+    {% if prev_url %}
+    <button class="btn btn-load">
+        <a href="{{ prev_url }}" class="btn btn-load">Previous Page</a>
+    </button>
+    {% endif %}
+</div>
+{% endif %}
+
+
 
 
 
