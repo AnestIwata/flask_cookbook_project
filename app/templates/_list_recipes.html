@@ -1,5 +1,6 @@
 {% block main %}
 <!-- List Recipes -->
+
 <div class="list">
     <div class="container">
         <div class="row">
@@ -10,9 +11,9 @@
 
                         <div class="sort-select">
                             <label>Sort By:</label>
-                            <select class="js-search-category form-control" name="sort_by" form="category_form">
-                                <option value="1">From newest</option>
-                                <option value="2">From oldest</option>
+                            <select id="sort" class="js-search-category form-control" name="sort_by" form="category_form">
+                                <option value="1">Newest</option>
+                                <option value="2">Oldest</option>
                                 <option value="3">Popularity</option>
                             </select>
                         </div>
@@ -26,4 +27,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
