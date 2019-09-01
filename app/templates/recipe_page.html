@@ -37,8 +37,13 @@
                 </div>
                 <div>
                     <button type="button" id="edit_btn" class="btn btn-default" >
-                        <a href="{{url_for('edit_recipe', recipe_name=recipe.name)}}" >
+                        <a class="a" href="{{url_for('edit_recipe', recipe_name=recipe.name)}}" >
                             Edit Recipe
+                        </a>
+                    </button>
+                    <button type="button" id="delete_btn" class="btn btn-default" >
+                        <a href="{{url_for('delete_recipe', recipe_name=recipe.name)}}" class="a" >
+                            Delete Recipe
                         </a>
                     </button>
                 </div>
