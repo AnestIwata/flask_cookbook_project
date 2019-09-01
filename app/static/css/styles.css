@@ -26,10 +26,18 @@ body {
 #edit_btn {
   margin-bottom: 7px;
   padding: 10px;
-  color: #fff;
   border-radius: 4px;
   background-color: #08a81e;
-  justify-content: center;
+}
+#delete_btn {
+  margin-bottom: 7px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #ad0000;
+}
+#delete_btn a,
+#edit_btn a {
+  color: #fff;
 }
 #list_image {
   object-fit: cover;
@@ -40,6 +48,7 @@ body {
   max-width:100%;
   object-fit: scale-down;
 }
+
 .navbar .navbar-brand {
   font-weight: bold;
   position: absolute;
