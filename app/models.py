@@ -74,6 +74,26 @@ class Recipe(db.Model):
     def __repr__(self):
         return '<Recipe {}>'.format(self.name)
 
+    def serialize(self):
+        return {
+           'id': self.id,
+           'name': self.name,
+           'content' : self.content,
+           'timestamp' : self.timestamp,
+           'user_id' : self.user_id,
+           'cuisine_id' : self.cuisine_id,
+           'category_id' : self.category_id,
+           'calories' : self.calories,
+           'carbohydrates' : self.carbohydrates,
+           'proteins' : self.proteins,
+           'fats' : self.fats,
+           'cholesterol' : self.cholesterol,
+           'serves_num_people' : self.serves_num_people,
+           'time_to_prepare' : self.time_to_prepare,
+           'cooking_time' : self.cooking_time,
+           'image' : self.image,
+        }
+
 class NutritionFacts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     calories = db.Column(db.Integer)
@@ -103,6 +123,12 @@ class Ingredient(db.Model):
     def get_all_ingredients():
         return Ingredient.query.all()
 
+    def serialize(self):
+        return {
+            'id' : self.id,
+            'ingredient_name' : self.name,
+            'recipes' : self.recipes
+        }
 
 class Allergen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -118,6 +144,12 @@ class Allergen(db.Model):
     def get_all_allergens():
         return Allergen.query.all()
 
+    def serialize(self):
+        return {
+            'id' : self.id,
+            'allergen_name' : self.name,
+            'recipes' : self.recipes
+        }
 
 
 class Country(db.Model):
