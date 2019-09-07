@@ -8,6 +8,8 @@ from app import app, db
 from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm
 from app.models import Recipe, User, Ingredient, Country, Category, Allergen, Cuisine, NutritionFacts
 from app.poppulate_database import Poppulate
+from sqlalchemy import bindparam
+from sqlalchemy.ext import baked
 
 # Homepage route
 @app.route('/')
@@ -260,10 +262,15 @@ def search_handler():
     allergens_form = request.form.getlist('allergens[]')
     choose_ingredients = request.form.get('choose_ingredients')
     sort_by = request.form.get('sort_by')
+    bakery = baked.bakery()
     print(sort_by)
     if category_form != 1:
-        queried_recipes = Recipe.query.filter_by(
-            category_id=category_form).all()
+        baked_query = bakery(lambda category_form: Recipe.query.filter_by(
+                category_id == bindparam('category_form')))
+        queried_recipes = baked_query(session).params(category_id=category_form).all()
+
+        # queried_recipes = Recipe.query.filter_by(
+        #     category_id=category_form).all()
         if ingredients_form != []:
             for ingredient in ingredients_form:
                 temp_recipes = Recipe.query.filter(
@@ -281,7 +288,8 @@ def search_handler():
             queried_recipes = set(queried_recipes) - \
                 set(recipes_with_allergens)
             print(queried_recipes)
-
+    else:
+        print("Hello")
     queried_recipes = list(set(queried_recipes))
     form = SearchForm()
     ingredients = Ingredient.query.all()

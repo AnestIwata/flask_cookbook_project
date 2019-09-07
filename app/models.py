@@ -59,6 +59,7 @@ class Recipe(db.Model):
     time_to_prepare = db.Column(db.Integer)
     cooking_time = db.Column(db.Integer)
     image = db.Column(db.String(128))
+    comments = db.relationship('Comment', backref='recipe', lazy='dynamic')
 
     # Many to many relations
     _ingredients = db.relationship(
@@ -190,3 +191,11 @@ class Cuisine(db.Model):
 
     def get_all_cuisines_except_all():
         return Cuisine.query.filter(Cuisine.name!="All").all()
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    def __repr__(self):
+        return '<Comment {}>'.format(self.name)
+

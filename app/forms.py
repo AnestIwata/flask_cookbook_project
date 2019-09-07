@@ -83,10 +83,10 @@ class SearchForm(FlaskForm):
         u'Choose category:', query_factory=Category.get_all_categories_except_all, get_label='name',
         render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
     ingredients = SelectMultipleField(
-        'Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()],
+        'Select ingredients (you can select more than one):', coerce=int,
         render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
     allergens = SelectMultipleField(
-        'Select allergens (you can select more than one):', coerce=int, validators=[DataRequired()],
+        'Select allergens (you can select more than one):', coerce=int,
         render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
     any_ingredients = SelectField('Recipe needs to have', coerce=int, validators=[
                                   DataRequired()])
