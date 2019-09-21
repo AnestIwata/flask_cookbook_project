@@ -4,7 +4,7 @@
 
 
 <!-- Search -->
-<form method='POST' id='category_form' action='{{ url_for("search_handler") }}'>
+<form method='POST' id='category_form' action='{{ url_for("search_handler", form=form) }}'>
     {{ form.hidden_tag() }}
     <div class="search">
         <div class="container">
@@ -36,12 +36,8 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <label>Recipe needs to have</label>
-                                <select class="js-search-category form-control" name="choose_ingredients"
-                                    data-placeholder="Choose Category">
-                                    <option value="1">All of selected ingredients </option>
-                                    <option value="2">Any of selected ingredients</option>
-                                </select>
+                                {{ form.any_ingredients.label }}
+                                {{ form.any_ingredients(class_="form-control") }}
                             </div>
                         </div>
                         <div class="col-lg-12">

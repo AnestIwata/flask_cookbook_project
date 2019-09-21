@@ -35,6 +35,7 @@
                         </div>
                     </div>
                 </div>
+                {% if userIsAnAuthor %}
                 <div>
                     <button type="button" id="edit_btn" class="btn btn-default" >
                         <a class="a" href="{{url_for('edit_recipe', recipe_name=recipe.name)}}" >
@@ -47,6 +48,7 @@
                         </a>
                     </button>
                 </div>
+                {% endif %}
                 <div>
 
                     <p>{{ short_summary }}</p>
