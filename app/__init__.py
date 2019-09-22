@@ -13,6 +13,7 @@ migrate = Migrate(app, db)
 bootstrap = Bootstrap(app)
 login = LoginManager(app)
 login.login_view = 'login'
+login.init_app(app)
 app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
   if app.config['ELASTICSEARCH_URL'] else None
 

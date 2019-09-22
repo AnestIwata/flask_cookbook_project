@@ -1,3 +1,4 @@
+from flask import request
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
 from wtforms import SelectMultipleField, StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, IntegerField, widgets
@@ -104,6 +105,13 @@ class SearchForm(FlaskForm):
         render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
     any_ingredients = SelectField('Recipe needs to have', coerce=int, 
         render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
-    search_text = StringField()
+    search_text = StringField('Search')
     submit = SubmitField('Search Recipes')
+
+    def __init__(self, *args, **kwargs):
+        if 'formdata' not in kwargs:
+            kwargs['formdata'] = request.args
+        if 'csrf_enabled' not in kwargs:
+            kwargs['csrf_enabled'] = False
+        super(SearchForm, self).__init__(*args, **kwargs)
 

@@ -1,7 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script>
+    $(document).on("change", '#department', function(e) {
+        var department = $(this).val();
+        
 
+        $.ajax({
+            type: "POST",
+            data: {department: department},
+            url: 'admin/users/get_name_list.php',
+            dataType: 'json',
+            success: function(json) {
+
+                var $el = $("#name");
+                $el.empty(); // remove old options
+                $el.append($("<option></option>")
+                        .attr("value", '').text('Please Select'));
+                $.each(json, function(value, key) {
+                    $el.append($("<option></option>")
+                            .attr("value", value).text(key));
+                });														
+                
+
+                
+                
+            }
+        });
+
+    });
+</script>
 
 <!-- Search -->
 <form method='POST' id='category_form' action='{{ url_for("search_handler", form=form) }}'>
@@ -42,7 +70,7 @@
                         </div>
                         <div class="col-lg-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Search by Keyword">
+                                {{ form.search_text(class_="form-control") }}
                                 <button type="submit" class="btn">Search Recipes</button>
                             </div>
                         </div>

@@ -1,11 +1,11 @@
 import os, re, json, sqlalchemy
 from datetime import datetime 
-from flask import Flask, flash, redirect, render_template, request, url_for, jsonify, session
+from flask import Flask, flash, redirect, render_template, request, url_for, jsonify, session, g, current_app
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm, CommentForm
+from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm, CommentForm, SearchForm
 from app.models import Recipe, User, Ingredient, Country, Category, Allergen, Cuisine, Comment
 from app.poppulate_database import Poppulate
 from sqlalchemy import bindparam
@@ -125,20 +125,6 @@ def add_recipe():
                 print("There was a DB error while saving Recipe.")
             print("Recipe added")
 
-            nutrition = NutritionFacts(
-                calories = form.calories.data,
-                carbohydrates = form.carbohydrates.data,
-                proteins = form.proteins.data,
-                fats = form.fats.data,
-                cholesterol = form.cholesterol.data,
-            )
-            try:
-                db.session.add(nutrition)
-                db.session.commit()
-            except:
-                print("There was a DB error while saving NutritionFacts.")
-            print("NutritionFacts added")
-
             flash("Congrats, you have added a recipe!") 
             return redirect(url_for('recipe', recipe_name=form.name.data))
         else:
@@ -227,9 +213,6 @@ def recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     userIsAnAuthor = False
     comment_form = CommentForm()
-    comment = Comment.query.filter_by(name="Easy").first()
-    print(comment.recipe_id)
-    print(recipe.id)
     comments = Comment.query.filter_by(recipe_id=recipe.id).all()
     print(comments)
     if current_user.is_authenticated and current_user == recipe.author:
@@ -276,6 +259,11 @@ def upvote():
         return json.dumps({'status' : 'no recipe found'})
     return redirect(url_for('index'))
 
+def before_request():
+    db.session.commit()
+    g.search_form = SearchForm()
+    g.locale = str(get_locale())
+    
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
     form = form_ingredients_and_allergens(SearchForm())
@@ -308,13 +296,16 @@ def search_handler():
     ingredients_ids = request.form.getlist('ingredients')
     allergens_ids = request.form.getlist('allergens')
     any_ingredients = request.form.get('any_ingredients')
+    search_text = request.form.get('search_text')
     form = form_ingredients_and_allergens(SearchForm())
     form.any_ingredients.choices = [(1, "All of selected ingredients"), (2, "Any of selected ingredients")]
 
     page = request.args.get('page', 1, type=int)
+    recipes_text_search = []
+    if search_text:
+        recipes_text_search = Recipe.search(search_text,page, 9)[0].all()
 
     search_result = []
-
     def custom_filter_statement(category_id, cuisine_id):
         if category_id == "1" and cuisine_id == "1":
             return sqlalchemy.sql.true()
@@ -335,10 +326,7 @@ def search_handler():
             ~Recipe._allergens.any(Allergen.id.in_(allergens_ids)),
             custom_filter_statement(category_id, cuisine_id)
         ).paginate(page, 3, False)
-    print(search_result)
-
-
-
+        
     empty = False
     if not search_result:
         empty = True
@@ -348,7 +336,6 @@ def search_handler():
 
     return render_template("recipes_list.html", title='Recipes', form=form, recipes=search_result.items,
         next_url=next_url, prev_url=prev_url, empty=empty)
-
 
 def form_ingredients_and_allergens(form):
     form.ingredients.choices = db.session.query(
