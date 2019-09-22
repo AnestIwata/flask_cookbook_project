@@ -32,6 +32,28 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     {% endblock %}
+    
+    {% block scripts %}
+    <!-- Javascript -->
+    <script src="{{ url_for('static', filename='static/js/plugins/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='static/js/plugins/popper.min.js') }}"></script>
+    <script src=" {{ url_for('static', filename='static/js/plugins/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='static/js/plugins/select2.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='static/js/plugins/jquery-ui.js') }}"></script>
+    <script src="{{ url_for('static', filename='static/js/scripts.js') }}"></script>
+    <!-- Script to get recipes using AJAX -->
+    <script type=text/javascript>
+        $(function() {
+            $('#sort').change(function() {
+                console.log("I am here")
+                $.getJSON('/fetch_recipes',
+                    function(data) {
+                        console.log(data)
+                });
+            }
+        )});
+    </script>
+    {% endblock %}
 </head>
 
 {% block navbar %}
@@ -112,28 +134,6 @@
         </div>
     </div>
 </footer>
-{% endblock %}
-
-{% block scripts %}
-<!-- Javascript -->
-<script src="{{ url_for('static', filename='static/js/plugins/jquery.min.js') }}"></script>
-<script src="{{ url_for('static', filename='static/js/plugins/popper.min.js') }}"></script>
-<script src=" {{ url_for('static', filename='static/js/plugins/bootstrap.min.js') }}"></script>
-<script src="{{ url_for('static', filename='static/js/plugins/select2.min.js') }}"></script>
-<script src="{{ url_for('static', filename='static/js/plugins/jquery-ui.js') }}"></script>
-<script src="{{ url_for('static', filename='static/js/scripts.js') }}"></script>
-<!-- Script to get recipes using AJAX -->
-<script type=text/javascript>
-    $(function() {
-        $('#sort').change(function() {
-            console.log("I am here")
-            $.getJSON('/fetch_recipes',
-                function(data) {
-                    console.log(data)
-            });
-        }
-    )});
-</script>
 {% endblock %}
 
 </html>

@@ -17,7 +17,6 @@ allergens_in_recipe = db.Table(
     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'))
 )
 
-
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -35,13 +34,12 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
-
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
-
 class Recipe(db.Model):
+    __searchable__ = ['name']
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
     content = db.Column(db.String(50000))
@@ -49,7 +47,6 @@ class Recipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cuisine_id = db.Column(db.Integer, db.ForeignKey('cuisine.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    nutrition = db.relationship('NutritionFacts', backref='recipe', lazy='dynamic')
     calories = db.Column(db.Integer)
     carbohydrates = db.Column(db.Integer)
     proteins = db.Column(db.Integer)
@@ -59,7 +56,7 @@ class Recipe(db.Model):
     time_to_prepare = db.Column(db.Integer)
     cooking_time = db.Column(db.Integer)
     image = db.Column(db.String(128))
-    comment_id = db.relationship('Comment', backref='comment', lazy='dynamic')
+    comments = db.relationship('Comment', backref='recipe', lazy='dynamic')
     upvotes = db.Column(db.Integer, default=0)
 
     # Many to many relations
@@ -96,21 +93,6 @@ class Recipe(db.Model):
            'image' : self.image,
            'upvotes' : self.upvotes
         }
-
-class NutritionFacts(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    calories = db.Column(db.Integer)
-    carbohydrates = db.Column(db.Integer)
-    proteins = db.Column(db.Integer)
-    fats = db.Column(db.Integer)
-    cholesterol = db.Column(db.Integer)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
-
-    def __repr__(self):
-        return '<NutritionFacts {}>'.format(self.name)
-
-    def get_all_countries():
-        return NutritionFacts.query
 
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -154,7 +136,6 @@ class Allergen(db.Model):
             'recipes' : self.recipes
         }
 
-
 class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
@@ -196,7 +177,11 @@ class Cuisine(db.Model):
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
+    name = db.Column(db.String(64))
+    email = db.Column(db.String(64))
+    website = db.Column(db.String(64))
+    comment = db.Column(db.String(500))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
     def __repr__(self):
         return '<Comment {}>'.format(self.name)

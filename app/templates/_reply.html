@@ -1,36 +1,32 @@
 {% block main %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 <div class="reply">
     <h3>Leave a Reply</h3>
-    <form method="post" id="commentform" class="comment-form">
-        <p class="comment-form-comment">
-            <textarea class="form-control" id="comment" name="comment" cols="45" rows="5"
-                aria-required="true"></textarea>
-        </p>
-        <div class="row">
-            <div class="col-md-4">
-                <p class="comment-form-author">
-                    <label for="author">Name <span class="required">*</span></label>
-                    <input class="form-control" id="author" name="author" type="text" value="" size="30" maxlength="245"
-                        aria-required="true" required="required">
-                </p>
-            </div>
-            <div class="col-md-4">
-                <p class="comment-form-email">
-                    <label for="email">Email <span class="required">*</span></label>
-                    <input class="form-control" id="email" name="email" type="text" value="" size="30" maxlength="100"
-                        aria-required="true" required="required">
-                </p>
-            </div>
-            <div class="col-md-4">
-                <p class="comment-form-url">
-                    <label for="url">Website</label>
-                    <input class="form-control" id="url" name="url" type="text" value="" size="30" maxlength="200">
-                </p>
+    <form method='POST' id='category_form' enctype="multipart/form-data">
+        {{ comment_form.hidden_tag() }}
+        <div class="form-group">
+            <div class="form-group required">
+                {{ comment_form.comment.label }}
+                {{ comment_form.comment(class_="form-control") }}
             </div>
         </div>
+        <div class="row">
+                <div class="form-group required col-lg-4">
+                    {{ comment_form.name.label }}
+                    {{ comment_form.name(class_="form-control") }}
+                </div>
+                <div class="form-group required col-lg-4">
+                    {{ comment_form.email.label }}
+                    {{ comment_form.email(class_="form-control") }}
+                </div>
+                <div class="form-group required col-lg-4">
+                    {{ comment_form.website.label }}
+                    {{ comment_form.website(class_="form-control") }}
+                </div>
+        </div>
         <p class="form-submit">
-            <input class="btn btn-submit btn-block" name="submit" type="submit" id="submit" value="Post Comment">
+                {{ comment_form.submit(class_="btn btn-submit btn-block") }}
         </p>
     </form>
 </div>

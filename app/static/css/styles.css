@@ -35,6 +35,13 @@ body {
   border-radius: 4px;
   background-color: #ad0000;
 }
+#upvote_btn {
+  margin-bottom: 7px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #000cad;
+  color: #fff;
+}
 #delete_btn a,
 #edit_btn a {
   color: #fff;
@@ -43,12 +50,15 @@ body {
   object-fit: cover;
   height: 300px;
 }
-
 #page_image {
   max-width:100%;
   object-fit: scale-down;
 }
 
+.btn-default {
+  background: #08a81e;
+  color: #fff;
+}
 .navbar .navbar-brand {
   font-weight: bold;
   position: absolute;
@@ -639,9 +649,6 @@ body {
 .recipe-detail .reply h3 {
   margin-top: 0;
   text-decoration: none;
-}
-.recipe-detail .reply .required {
-  color: red;
 }
 .recipe-detail .reply .btn-submit {
   margin-top: 10px;

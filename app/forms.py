@@ -81,6 +81,13 @@ class ContactForm(FlaskForm):
     message = TextAreaField('Message: ', validators=[Length(min=10, max=5000)])
     submit = SubmitField('Submit')
 
+class CommentForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    comment = TextAreaField('Comment: ', validators=[
+                            Length(min=5, max=5000)])
+    website = StringField('Website')
+    submit = SubmitField('Submit')
 
 class SearchForm(FlaskForm):
     cuisine = QuerySelectField(

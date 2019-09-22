@@ -7,10 +7,10 @@
         {% for comment in comments %}
         <li>
             <div class="post-comments">
-                <p class="meta">{{ comment.timestamp }}<a href="#">{{ comment.author }}</a> says : <i
-                        class="pull-right"><a href="#"><small>Reply</small></a></i></p>
+                <p class="meta">{{ comment.timestamp }}  {{ comment.name }} {{ comment.email }} says : <i
+                        class="pull-right"></i></p>
                 <p>
-                    {{ comment.content}}
+                    {{ comment.comment }}
                 </p>
             </div>
         </li>

@@ -1,6 +1,24 @@
 {% extends 'base.html' %}
 {% block app_content %}
+<script>
+    $(document).on('click', '#upvote_btn', function(event) {
+        $.ajax({
+            url : '/upvote',
+            type : "post",
+            contentType: 'application/json;charset=UTF-8',
+            dataType: "json",
+            data : JSON.stringify({'recipe_name' : $('#upvote_btn').data('recipe_name')}),
+            success : function(response) {
 
+                $("#upvote_btn").html("Likes: " + response.upvotes)
+            },
+            error : function(xhr) {
+                console.log(xhr);
+            }
+        });
+        event.preventDefault();
+    });
+</script>
 <!-- Detail Recipes-->
 <div class="recipe-detail">
     <div class="container">
@@ -43,16 +61,14 @@
                         </a>
                     </button>
                     <button type="button" id="delete_btn" class="btn btn-default" >
-                        <a href="{{url_for('delete_recipe', recipe_name=recipe.name)}}" class="a" >
+                        <a class="a" href="{{url_for('delete_recipe', recipe_name=recipe.name)}}" >
                             Delete Recipe
                         </a>
                     </button>
                     {% endif %}
                     {% if current_user.is_authenticated %}
-                    <button type="button" id="upvote_btn" class="btn btn-default" >
-                        <a href="{{url_for('upvote', recipe=recipe)}}" class="a" >
-                            Upvote!: {{recipe.upvotes}}
-                        </a>
+                    <button type="button" id="upvote_btn" class="btn btn-default" data-recipe_name="{{ recipe.name }}">
+                            Likes: {{ recipe.upvotes }}
                     </button>
                     {% endif %}
                 </div>

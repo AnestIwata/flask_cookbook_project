@@ -5,8 +5,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm
-from app.models import Recipe, User, Ingredient, Country, Category, Allergen, Cuisine, NutritionFacts
+from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm, CommentForm
+from app.models import Recipe, User, Ingredient, Country, Category, Allergen, Cuisine, Comment
 from app.poppulate_database import Poppulate
 from sqlalchemy import bindparam
 from sqlalchemy.ext import baked
@@ -222,23 +222,59 @@ def delete_recipe(recipe_name):
     flash("Your recipe has been deleted.")
     return redirect(url_for('recipes_list'))
 
-@app.route('/recipe/<recipe_name>')
+@app.route('/recipe/<recipe_name>',methods=['GET','POST'])
 def recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     userIsAnAuthor = False
+    comment_form = CommentForm()
+    comment = Comment.query.filter_by(name="Easy").first()
+    print(comment.recipe_id)
+    print(recipe.id)
+    comments = Comment.query.filter_by(recipe_id=recipe.id).all()
+    print(comments)
     if current_user.is_authenticated and current_user == recipe.author:
         userIsAnAuthor = True
+
     content = re.split(r' *[\.\?!][\'"\)\]]* *', recipe.content)
     short_summary = content[0]
+
+    if comment_form.validate_on_submit():
+        print(comment_form.data)
+        created_comment = Comment(
+            name = comment_form.name.data,
+            email = comment_form.email.data,
+            website = comment_form.website.data,
+            comment = comment_form.comment.data,
+            recipe_id= recipe.id
+        )
+        try:
+            db.session.add(created_comment)
+            db.session.commit()
+            print("Comment was successfuly added")
+        except:
+            print("There was a DB error while saving Comment.")
+        
+    else:
+        print("There was an error")
     return render_template("recipe_page.html", recipe=recipe, content=content, short_summary=short_summary, userIsAnAuthor=userIsAnAuthor,
-    upvotes=recipe.upvotes, nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
+    upvotes=recipe.upvotes, comments=comments, comment_form=comment_form, nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
 
 
 @app.route('/upvote', methods=['POST'])
-@login_required
-def upvote(recipe):
-    recipe.upvotes += 1
-    return jsonify({'upvotes':recipe.upvotes})
+def upvote():
+    if request.method == "POST":
+
+        data_received = json.loads(request.data) 
+        print(data_received)
+        recipe = Recipe.query.filter_by(name=data_received['recipe_name']).first()
+        print(recipe)
+        if recipe:
+            recipe.upvotes += 1
+            db.session.commit()
+            print(recipe.upvotes)
+            return json.dumps({'upvotes' : str(recipe.upvotes)})
+        return json.dumps({'status' : 'no recipe found'})
+    return redirect(url_for('index'))
 
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
