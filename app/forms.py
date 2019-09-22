@@ -3,7 +3,7 @@ from flask_wtf.file import FileField, FileRequired
 from wtforms import SelectMultipleField, StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, IntegerField, widgets
 from wtforms.validators import DataRequired, Length, Email, ValidationError, EqualTo, NumberRange
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from app.models import User, Category, Country, Cuisine
+from app.models import User, Category, Country, Cuisine, Recipe
 
 
 class LoginForm(FlaskForm):
@@ -64,8 +64,15 @@ class RecipeForm(FlaskForm):
     cholesterol = IntegerField(u'Cholesterol:', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+    def __init__(self, recipe_name, *args, **kwargs):
+        super(RecipeForm, self).__init__(*args, **kwargs)
+        self.original_name = recipe_name
 
-
+    def validate_recipe_name(self, recipe_name):
+        if recipe_name.data != self.original_name:
+            recipe = Recipe.query.filter_by(name=self.recipe_name.data).first()
+            if recipe is not None:
+                raise ValidationError('Please use a different name.')
 
 class ContactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
@@ -77,10 +84,10 @@ class ContactForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     cuisine = QuerySelectField(
-        u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines_except_all, get_label='name',
+        u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines, get_label='name',
         render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
     category = QuerySelectField(
-        u'Choose category:', query_factory=Category.get_all_categories_except_all, get_label='name',
+        u'Choose category:', query_factory=Category.get_all_categories, get_label='name',
         render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
     ingredients = SelectMultipleField(
         'Select ingredients (you can select more than one):', coerce=int,
@@ -93,5 +100,3 @@ class SearchForm(FlaskForm):
     search_text = StringField()
     submit = SubmitField('Search Recipes')
 
-# class CommentForm(FlaskForm):
-    

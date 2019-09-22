@@ -1,4 +1,4 @@
-import os, re, json 
+import os, re, json, sqlalchemy
 from datetime import datetime 
 from flask import Flask, flash, redirect, render_template, request, url_for, jsonify, session
 from flask_login import login_user, logout_user, current_user, login_required
@@ -78,7 +78,7 @@ def fetch_recipes():
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
     if current_user.is_authenticated:
-        form = form_ingredients_and_allergens(RecipeForm())
+        form = form_ingredients_and_allergens(RecipeForm(recipe_name=""))
         if form.validate_on_submit():
             f = form.image.data
             print(form.image.data)
@@ -154,7 +154,7 @@ def add_recipe():
 def edit_recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     if current_user.is_authenticated and current_user == recipe.author:
-        form = form_ingredients_and_allergens(RecipeForm(obj=recipe))
+        form = form_ingredients_and_allergens(RecipeForm(obj=recipe, recipe_name=recipe.name))
         if form.validate_on_submit():
             f = form.image.data
             filename = secure_filename(f.filename)
@@ -226,16 +226,19 @@ def delete_recipe(recipe_name):
 def recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     userIsAnAuthor = False
-    print(current_user)
-    print(current_user.is_authenticated)
-    print(current_user == recipe.author)
     if current_user.is_authenticated and current_user == recipe.author:
         userIsAnAuthor = True
     content = re.split(r' *[\.\?!][\'"\)\]]* *', recipe.content)
     short_summary = content[0]
     return render_template("recipe_page.html", recipe=recipe, content=content, short_summary=short_summary, userIsAnAuthor=userIsAnAuthor,
-    nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
+    upvotes=recipe.upvotes, nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
 
+
+@app.route('/upvote', methods=['POST'])
+@login_required
+def upvote(recipe):
+    recipe.upvotes += 1
+    return jsonify({'upvotes':recipe.upvotes})
 
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
@@ -261,94 +264,55 @@ def contact():
     return render_template("contact.html", form=form, )
 
 
+
 @app.route('/search_handler', methods=["POST"])
 def search_handler():
-    category_form = request.form.get('category')
-    ingredients_form = request.form.getlist('ingredients')
-    allergens_form = request.form.getlist('allergens')
+    category_id = request.form.get('category')
+    cuisine_id = request.form.get('cuisine')
+    ingredients_ids = request.form.getlist('ingredients')
+    allergens_ids = request.form.getlist('allergens')
     any_ingredients = request.form.get('any_ingredients')
-    
     form = form_ingredients_and_allergens(SearchForm())
     form.any_ingredients.choices = [(1, "All of selected ingredients"), (2, "Any of selected ingredients")]
 
     page = request.args.get('page', 1, type=int)
-    # search_result = Recipe.query.filter_by(Recipe._ingredients.any(Recipe._ingredients.))
-    print("Form ingredient " + str(ingredients_form))
-    # all_recipes = Recipe.query.all()
-    category_search_result = Recipe.query.filter_by(category_id=category_form).all()
 
-    search_result = [i for i in category_search_result]
-    
-    print("category search result " + str(category_search_result))
-    search_result2 = Recipe.query.filter(Recipe._ingredients.any(Ingredient.id.in_(ingredients_form))).all()
-    print(search_result2)
-    for recipe in category_search_result:
-        recipe_ingredients = []
-        for ingredient in recipe._ingredients:
-            recipe_ingredients.append(str(ingredient.id))
+    search_result = []
 
-        common_ingredients = list(set(recipe_ingredients) & set(ingredients_form))
+    def custom_filter_statement(category_id, cuisine_id):
+        if category_id == "1" and cuisine_id == "1":
+            return sqlalchemy.sql.true()
+        elif cuisine_id == "1":
+            return Recipe.category_id == category_id
+        elif category_id == "1":
+            return Recipe.cuisine_id == cuisine_id
+        return sqlalchemy.and_(Recipe.category_id==category_id, Recipe.cuisine_id==cuisine_id)
 
-        recipe_allergens = []
-        for allergen in recipe._allergens:
-            recipe_ingredients.append(str(allergen.id))
-            
-        common_allergens = list(set(recipe_allergens) & set(allergens_form))
-        print(common_allergens)
-        print(common_ingredients)
-        if common_ingredients and not common_allergens:
-            if any_ingredients == '1':
-                if common_ingredients == ingredients_form:
-                    search_result.append(recipe)
-            else:
-                search_result.append(recipe)
-        
+    if ingredients_ids and any_ingredients in ["1", "2"]:
+        search_result = Recipe.query.filter(
+            Recipe._ingredients.any(Ingredient.id.in_(ingredients_ids)),
+            ~Recipe._allergens.any(Allergen.id.in_(allergens_ids)),
+            custom_filter_statement(category_id, cuisine_id)
+            ).paginate(page, 3, False)
+    else:
+        search_result = Recipe.query.filter(
+            ~Recipe._allergens.any(Allergen.id.in_(allergens_ids)),
+            custom_filter_statement(category_id, cuisine_id)
+        ).paginate(page, 3, False)
+    print(search_result)
 
-        # print(Recipe.query.filter(Recipe._ingredients.any(Recipe._ingredients.in_(ingredients_form))))
-        # for ingredient in recipe._ingredients:
-        #     Recipe.query.filter_by()
-    all_recipes = Recipe.query.paginate(page, 9, False)
-    # print(search_result)
-    # search_result_ingredients = Recipe.query.filter
+
 
     empty = False
     if not search_result:
         empty = True
 
-    next_url = url_for('recipes_list', page=all_recipes.next_num) if all_recipes.has_next else None
-    prev_url = url_for('recipes_list', page=all_recipes.prev_num) if all_recipes.has_prev else None
+    next_url = url_for('recipes_list', page=search_result.next_num) if search_result.has_next else None
+    prev_url = url_for('recipes_list', page=search_result.prev_num) if search_result.has_prev else None
 
-    return render_template("recipes_list.html", title='Recipes', form=form, recipes=search_result,
+    return render_template("recipes_list.html", title='Recipes', form=form, recipes=search_result.items,
         next_url=next_url, prev_url=prev_url, empty=empty)
 
-
-    # if category_form != 1:
-    #     queried_recipes = Recipe.query.filter_by(
-    #         category_id=category_form).all()
-    #     if ingredients_form != []:
-    #         for ingredient in ingredients_form:
-    #             temp_recipes = Recipe.query.filter(
-    #                 Recipe._ingredients.any(Ingredient.name == ingredient)).all()
-    #             queried_recipes = list(
-    #                 set(queried_recipes).intersection(temp_recipes))
-    #     if allergens_form != []:
-    #         recipes_with_allergens = []
-    #         for allergen in allergens_form:
-    #             recipes_with_allergens.extend(Recipe.query.filter(
-    #                 Recipe._allergens.any(Allergen.id == allergen)).all())
-    #         queried_recipes = set(queried_recipes) - \
-    #             set(recipes_with_allergens)
-    # else:
-    #     print("Hello")
-    # queried_recipes = list(set(queried_recipes))
-    # form = SearchForm()
-    # ingredients = Ingredient.query.all()
-    # categories = Category.query.all()
-    # cuisines = Cuisine.query.all()
-    # first_three_ingredients = Ingredient.query.limit(3).all()
-    # allergens = Allergen.query.all()
-    # return render_template("recipes_list.html", form=form, recipes=queried_recipes, categories=categories, cuisines=cuisines,
-    #                        ingredients=ingredients, first_three_ingredients=first_three_ingredients, allergens=allergens)
 
 def form_ingredients_and_allergens(form):
     form.ingredients.choices = db.session.query(

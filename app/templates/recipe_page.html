@@ -35,8 +35,8 @@
                         </div>
                     </div>
                 </div>
-                {% if userIsAnAuthor %}
                 <div>
+                    {% if userIsAnAuthor %}
                     <button type="button" id="edit_btn" class="btn btn-default" >
                         <a class="a" href="{{url_for('edit_recipe', recipe_name=recipe.name)}}" >
                             Edit Recipe
@@ -47,8 +47,16 @@
                             Delete Recipe
                         </a>
                     </button>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                    <button type="button" id="upvote_btn" class="btn btn-default" >
+                        <a href="{{url_for('upvote', recipe=recipe)}}" class="a" >
+                            Upvote!: {{recipe.upvotes}}
+                        </a>
+                    </button>
+                    {% endif %}
                 </div>
-                {% endif %}
+               
                 <div>
 
                     <p>{{ short_summary }}</p>

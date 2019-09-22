@@ -60,6 +60,7 @@ class Recipe(db.Model):
     cooking_time = db.Column(db.Integer)
     image = db.Column(db.String(128))
     comment_id = db.relationship('Comment', backref='comment', lazy='dynamic')
+    upvotes = db.Column(db.Integer, default=0)
 
     # Many to many relations
     _ingredients = db.relationship(
@@ -93,6 +94,7 @@ class Recipe(db.Model):
            'time_to_prepare' : self.time_to_prepare,
            'cooking_time' : self.cooking_time,
            'image' : self.image,
+           'upvotes' : self.upvotes
         }
 
 class NutritionFacts(db.Model):
