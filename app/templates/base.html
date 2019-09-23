@@ -41,18 +41,7 @@
     <script src="{{ url_for('static', filename='static/js/plugins/select2.min.js') }}"></script>
     <script src="{{ url_for('static', filename='static/js/plugins/jquery-ui.js') }}"></script>
     <script src="{{ url_for('static', filename='static/js/scripts.js') }}"></script>
-    <!-- Script to get recipes using AJAX -->
-    <script type=text/javascript>
-        $(function() {
-            $('#sort').change(function() {
-                console.log("I am here")
-                $.getJSON('/fetch_recipes',
-                    function(data) {
-                        console.log(data)
-                });
-            }
-        )});
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
     {% endblock %}
 </head>
 

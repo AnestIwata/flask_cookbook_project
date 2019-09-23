@@ -8,18 +8,6 @@
                 <form action="POST">
                     <div class="form-group col-lg-12">
                         <h5><i class="fa fa-cutlery" aria-hidden="true"></i> All Recipes</h5>
-
-                        {% if not homepage %}
-                        <div class="sort-select">
-                            <label>Sort By:</label>
-                            <select id="sort" class="js-search-category form-control" name="sort_by" form="category_form">
-                                <option value="1">Newest</option>
-                                <option value="2">Oldest</option>
-                                <option value="3">Popularity</option>
-                            </select>
-                        </div>
-                        {% endif %}
-
                         {% if empty %}
                         <div>
                             <h2>No Recipes available...</h2>
@@ -29,8 +17,8 @@
                 </form>
             </div>
             
-            {% for recipe in recipes|sort(attribute=sortkey, reverse = True) %}
-            {% include '_recipe.html' %}
+            {% for recipe in recipes|sort(attribute=sortkey, reverse=reverse) %}
+                {% include '_recipe.html' %}
             {% endfor %}
             
         </div>

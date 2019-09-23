@@ -19,11 +19,9 @@ def index():
 
     recipes = Recipe.query.limit(3).all()
     empty = False
-    print(recipes)
     if not recipes:
         empty=True
-
-    return render_template("index.html", recipes=recipes, empty=empty, homepage=True)
+    return render_template("index.html", recipes=recipes, empty=empty, sortkey='timestamp', reverse=True)
 
 # Login page route
 @app.route('/login', methods=["GET", "POST"])
@@ -39,10 +37,10 @@ def login():
         login_user(user, remember=form.remember_me.data)
 
         recipes = Recipe.query.limit(3).all()
+        empty = False
         if not recipes:
             empty=True
-        return render_template('index.html', title='Sign In', recipes=recipes, empty=empty, form=form)
-        
+        return render_template('index.html', title='Homepage', empty=empty, sortkey='timestamp', reverse=True)
     return render_template('login.html', title='Sign In', form=form)
 
 
@@ -75,9 +73,6 @@ def register():
 @login_required
 def fetch_recipes():
     recipes_comprehension = Recipe.query.all()
-    # recipes_comprehension = [datetime.date(*[int(y) for y in x.split("-")]) for x in recipes]
-    # sorted_recipes = sorted(recipes_comprehension)
-    print(recipes_comprehension)
     return jsonify(new_recipes=[recipe.serialize() for recipe in recipes_comprehension])
 
 @app.route('/add_recipe', methods=["GET", "POST"])
@@ -267,15 +262,14 @@ def upvote():
 def before_request():
     db.session.commit()
     g.search_form = SearchForm()
-    g.locale = str(get_locale())
     
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
     form = form_ingredients_and_allergens(SearchForm())
+    form.sortkey.choices = [('timestamp', 'Newest'), ('timestamp', 'Oldest'), ('upvotes', 'Popularity'), ('name', 'Name')]
     page = request.args.get('page', 1, type=int)
-    recipes = Recipe.query.paginate(page, 9, False)
+    recipes = Recipe.query.paginate(page, 3, False)
     form.any_ingredients.choices = [(1, "All of selected ingredients"), (2, "Any of selected ingredients")]
-
     empty = False
     if not recipes.items:
         empty = True
@@ -284,7 +278,7 @@ def recipes_list():
     prev_url = url_for('recipes_list', page=recipes.prev_num) if recipes.has_prev else None
 
     return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes.items,
-        next_url=next_url, prev_url=prev_url, empty=empty, sortkey='timestamp')
+        next_url=next_url, prev_url=prev_url, empty=empty, sortkey='timestamp', reverse=True)
 
 
 @app.route('/contact', methods=["GET", "POST"])
@@ -302,7 +296,9 @@ def search_handler():
     allergens_ids = request.form.getlist('allergens')
     any_ingredients = request.form.get('any_ingredients')
     search_text = request.form.get('search_text')
+    sortkey = request.form.get('sortkey')
     form = form_ingredients_and_allergens(SearchForm())
+    form.sortkey.choices = [('timestamp', 'Newest'), ('timestamp', 'Oldest'), ('upvotes', 'Popularity'), ('name', 'Name')]
     form.any_ingredients.choices = [(1, "All of selected ingredients"), (2, "Any of selected ingredients")]
 
     page = request.args.get('page', 1, type=int)
@@ -332,15 +328,15 @@ def search_handler():
             custom_filter_statement(category_id, cuisine_id)
         ).paginate(page, 3, False)
         
-    empty = False
-    if not search_result:
-        empty = True
+
+    reverse = False if sortkey == 'name' else True
+    print("reverse" + str(reverse) + " and " + str(sortkey))
 
     next_url = url_for('recipes_list', page=search_result.next_num) if search_result.has_next else None
     prev_url = url_for('recipes_list', page=search_result.prev_num) if search_result.has_prev else None
-
+    
     return render_template("recipes_list.html", title='Recipes', form=form, recipes=search_result.items,
-        next_url=next_url, prev_url=prev_url, empty=empty)
+        next_url=next_url, prev_url=prev_url, sortkey='name', reverse=False)
 
 def form_ingredients_and_allergens(form):
     form.ingredients.choices = db.session.query(
