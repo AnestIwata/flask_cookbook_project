@@ -37,7 +37,12 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        return render_template('index.html', title='Sign In', form=form)
+
+        recipes = Recipe.query.limit(3).all()
+        if not recipes:
+            empty=True
+        return render_template('index.html', title='Sign In', recipes=recipes, empty=empty, form=form)
+        
     return render_template('login.html', title='Sign In', form=form)
 
 
@@ -279,7 +284,7 @@ def recipes_list():
     prev_url = url_for('recipes_list', page=recipes.prev_num) if recipes.has_prev else None
 
     return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes.items,
-        next_url=next_url, prev_url=prev_url, empty=empty)
+        next_url=next_url, prev_url=prev_url, empty=empty, sortkey='timestamp')
 
 
 @app.route('/contact', methods=["GET", "POST"])
