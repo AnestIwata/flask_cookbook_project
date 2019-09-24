@@ -27,11 +27,11 @@ You can use my app online under this link [https://flask-cookbook-code.herokuapp
 ### Planning
 
 I had an idea of what I wanted the website to look like, and based on project specification what pages should be included:
-![Mockup](images\New_Mockup_1.png)
-![Mockup](images\New Mockup 2.png)
-![Mockup](images\New Mockup 3.png)
-![Mockup](images\New Mockup 4.png)
-![Mockup](images\New Mockup 5.png)
+![Mockup](images/New_Mockup_1.png)
+![Mockup](images/New_Mockup_2.png)
+![Mockup](images/New_Mockup_3.png)
+![Mockup](images/New_Mockup_4.png)
+![Mockup](images/New_Mockup_5.png)
 
 Planning the DB was a bigger headache, I had to figure out a way for allergens and ingredients to be included within many recipes while linking to the same row in database, so I made many to many relationship with association tables:
 ![DB Model](images\DB_Model_cookbook.png)
