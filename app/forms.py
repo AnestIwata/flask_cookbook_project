@@ -106,7 +106,6 @@ class SearchForm(FlaskForm):
     any_ingredients = SelectField('Recipe needs to have', coerce=int, 
         render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
     sortkey = SelectField('Sort recipes by: ')
-    search_text = StringField('Search', render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
     submit = SubmitField('Search Recipes')
 
     def __init__(self, *args, **kwargs):
