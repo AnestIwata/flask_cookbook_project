@@ -50,7 +50,6 @@ Clone the repository onto you machine, make sure you have python and pip install
 Preferably install virtualenv too so that you can keep your dependecies separated.
 Run ``` pip install -r requirements.txt ```
 ### Prerequisites
-
 python
 pip
 
