@@ -27,7 +27,7 @@ You can use my app online under this link [https://flask-cookbook-code.herokuapp
 ### Planning
 
 I had an idea of what I wanted the website to look like, and based on project specification what pages should be included:
-![Mockup](images\New Mockup 1.png)
+![Mockup](images\New_Mockup_1.png)
 ![Mockup](images\New Mockup 2.png)
 ![Mockup](images\New Mockup 3.png)
 ![Mockup](images\New Mockup 4.png)
