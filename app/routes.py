@@ -1,4 +1,5 @@
 import os, re, json, sqlalchemy
+from collections import Counter
 from datetime import datetime 
 from flask import Flask, flash, redirect, render_template, request, url_for, jsonify, session, g, current_app
 from flask_login import login_user, logout_user, current_user, login_required
@@ -266,10 +267,8 @@ def before_request():
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
     form = form_ingredients_and_allergens(SearchForm())
-    form.sortkey.choices = [('timestamp', 'Newest'), ('timestamp', 'Oldest'), ('upvotes', 'Popularity'), ('name', 'Name')]
     page = request.args.get('page', 1, type=int)
     recipes = Recipe.query.paginate(page, 3, False)
-    form.any_ingredients.choices = [(1, "All of selected ingredients"), (2, "Any of selected ingredients")]
     empty = False
     if not recipes.items:
         empty = True
@@ -278,7 +277,7 @@ def recipes_list():
     prev_url = url_for('recipes_list', page=recipes.prev_num) if recipes.has_prev else None
 
     return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes.items,
-        next_url=next_url, prev_url=prev_url, empty=empty, sortkey='timestamp', reverse=True)
+        next_url=next_url, prev_url=prev_url, empty=empty)
 
 
 @app.route('/contact', methods=["GET", "POST"])
@@ -286,9 +285,19 @@ def contact():
     form = ContactForm()
     return render_template("contact.html", form=form, )
 
+@app.route('/recipes_stats', methods=["GET"]) 
+def recipes_stats():
+    recipes = Recipe.query.all()
+    recipe_ids = [recipe.category_id for recipe in recipes]
 
+    data = Category.query.filter(Category.id.in_(recipe_ids)).all()
+    counted_ids = dict(Counter(recipe_ids))
+    categories = [category.name for category in data ]
+    print(categories)
+    print(counted_ids)
+    return render_template("recipes_stats.html", categories=json.dumps(categories), count=json.dumps(list(counted_ids.values())))
 
-@app.route('/search_handler', methods=["POST"])
+@app.route('/search_handler', methods=["POST", "GET"])
 def search_handler():
     category_id = request.form.get('category')
     cuisine_id = request.form.get('cuisine')
@@ -298,13 +307,7 @@ def search_handler():
     search_text = request.form.get('search_text')
     sortkey = request.form.get('sortkey')
     form = form_ingredients_and_allergens(SearchForm())
-    form.sortkey.choices = [('timestamp', 'Newest'), ('timestamp', 'Oldest'), ('upvotes', 'Popularity'), ('name', 'Name')]
-    form.any_ingredients.choices = [(1, "All of selected ingredients"), (2, "Any of selected ingredients")]
-
     page = request.args.get('page', 1, type=int)
-    recipes_text_search = []
-    if search_text:
-        recipes_text_search = Recipe.search(search_text,page, 9)[0].all()
 
     search_result = []
     def custom_filter_statement(category_id, cuisine_id):
@@ -316,19 +319,33 @@ def search_handler():
             return Recipe.cuisine_id == cuisine_id
         return sqlalchemy.and_(Recipe.category_id==category_id, Recipe.cuisine_id==cuisine_id)
 
+    def order_recipe_by(sortkey):
+        if sortkey=="newest":
+            return Recipe.timestamp.desc()
+        elif sortkey=="oldest":
+            return Recipe.timestamp.asc()
+        elif sortkey=="popularity":
+            return Recipe.upvotes.desc()
+        elif sortkey=="name":
+            return Recipe.name
+        else:
+            return Recipe.timestamp.asc()
+
     if ingredients_ids and any_ingredients in ["1", "2"]:
         search_result = Recipe.query.filter(
             Recipe._ingredients.any(Ingredient.id.in_(ingredients_ids)),
             ~Recipe._allergens.any(Allergen.id.in_(allergens_ids)),
             custom_filter_statement(category_id, cuisine_id)
+            ).order_by(Recipe.timestamp
             ).paginate(page, 3, False)
     else:
         search_result = Recipe.query.filter(
             ~Recipe._allergens.any(Allergen.id.in_(allergens_ids)),
             custom_filter_statement(category_id, cuisine_id)
+        ).order_by(order_recipe_by(sortkey)
         ).paginate(page, 3, False)
         
-
+    print(search_result.items)
     reverse = False if sortkey == 'name' else True
     print("reverse" + str(reverse) + " and " + str(sortkey))
 
@@ -336,11 +353,14 @@ def search_handler():
     prev_url = url_for('recipes_list', page=search_result.prev_num) if search_result.has_prev else None
     
     return render_template("recipes_list.html", title='Recipes', form=form, recipes=search_result.items,
-        next_url=next_url, prev_url=prev_url, sortkey='name', reverse=False)
+        next_url=next_url, prev_url=prev_url)
 
 def form_ingredients_and_allergens(form):
     form.ingredients.choices = db.session.query(
         Ingredient.id, Ingredient.name).all()
     form.allergens.choices = db.session.query(
         Allergen.id, Allergen.name).all()
+    form.sortkey.choices = [('newest', 'Newest'), ('oldest', 'Oldest'), ('popularity', 'Popularity'), ('name', 'Name')]
+    form.any_ingredients.choices = [(1, "All of selected ingredients"), (2, "Any of selected ingredients")]
+
     return form
