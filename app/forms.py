@@ -65,14 +65,18 @@ class RecipeForm(FlaskForm):
     cholesterol = IntegerField(u'Cholesterol:', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
-    def __init__(self, recipe_name, *args, **kwargs):
+    def __init__(self, original_name, *args, **kwargs):
         super(RecipeForm, self).__init__(*args, **kwargs)
-        self.original_name = recipe_name
+        self.original_name = original_name
 
-    def validate_recipe_name(self, recipe_name):
-        if recipe_name.data != self.original_name:
-            recipe = Recipe.query.filter_by(name=self.recipe_name.data).first()
+    def validate_recipe_name(self, name):
+        print(str(name.data) + " " + str(self.original_name))
+        if name.data != self.original_name:
+            
+            recipe = Recipe.query.filter_by(name=self.name.data).first()
+            print(recipe)
             if recipe is not None:
+                print(str(name.data) + " " + str(self.original_name))
                 raise ValidationError('Please use a different name.')
 
 class ContactForm(FlaskForm):

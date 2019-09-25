@@ -77,7 +77,7 @@ def fetch_recipes():
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
     if current_user.is_authenticated:
-        form = form_ingredients_and_allergens(RecipeForm(recipe_name=""))
+        form = form_ingredients_and_allergens(RecipeForm(original_name=""))
         if form.validate_on_submit():
             f = form.image.data
             filename = secure_filename(f.filename)
@@ -138,8 +138,8 @@ def add_recipe():
 def edit_recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     if current_user.is_authenticated and current_user == recipe.author:
-        form = form_ingredients_and_allergens(RecipeForm(obj=recipe, recipe_name=recipe.name))
-        if form.validate_on_submit():
+        form = form_ingredients_and_allergens(RecipeForm(obj=recipe, original_name=recipe.name))
+        if form.validate_on_submit() and form.validate_recipe_name:
             f = form.image.data
             filename = secure_filename(f.filename)
             file_path = os.path.join(
@@ -177,7 +177,7 @@ def edit_recipe(recipe_name):
                 allergens_in_recipe.append(queried_allergen)
             created_recipe._allergens = allergens_in_recipe
             try:
-                db.session.delete(recipe)
+                db.session.query(Recipe).filter(Recipe.id==recipe.id).delete()
                 db.session.commit()
 
                 db.session.add(created_recipe)
@@ -229,6 +229,7 @@ def recipe(recipe_name):
         try:
             db.session.add(created_comment)
             db.session.commit()
+            redirect(url_for("recipe", recipe_name=recipe.name))
             print("Comment was successfuly added")
         except:
             print("There was a DB error while saving Comment.")
@@ -343,7 +344,8 @@ def form_ingredients_and_allergens(form):
         Ingredient.id, Ingredient.name).all()
     form.allergens.choices = db.session.query(
         Allergen.id, Allergen.name).all()
-    form.sortkey.choices = [('newest', 'Newest'), ('oldest', 'Oldest'), ('popularity', 'Popularity'), ('name', 'Name')]
-    form.any_ingredients.choices = [(1, "All of selected ingredients"), (2, "Any of selected ingredients")]
+    if(isinstance(form, SearchForm)):
+        form.sortkey.choices = [('newest', 'Newest'), ('oldest', 'Oldest'), ('popularity', 'Popularity'), ('name', 'Name')]
+        form.any_ingredients.choices = [(1, "All of selected ingredients"), (2, "Any of selected ingredients")]
 
     return form
