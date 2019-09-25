@@ -16,6 +16,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Intelij
+.idea/
+
 # Distribution / packaging
 .Python
 build/
