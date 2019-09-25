@@ -63,4 +63,3 @@ After dependencies are installed you can run ```flask run``` and navigate to
 
 This project is made for Code Institute course, it could be developed further some time in the future.
 
-
