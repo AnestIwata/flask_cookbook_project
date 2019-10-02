@@ -39,7 +39,7 @@ def login():
         empty = False
         if not recipes:
             empty=True
-        return render_template('index.html', title='Homepage', empty=empty, sortkey='timestamp', reverse=True)
+        return render_template('index.html', title='Homepage', recipes=recipes, empty=empty, sortkey='timestamp', reverse=True)
     return render_template('login.html', title='Sign In', form=form)
 
 
@@ -145,7 +145,7 @@ def edit_recipe(recipe_name):
             file_path = os.path.join(
                 "app/static/img/recipes_images",  filename)
             f.save(file_path)
-
+            recipe.name = "non-existent"
             created_recipe = Recipe(
                 name = form.name.data,
                 content = form.content.data,
