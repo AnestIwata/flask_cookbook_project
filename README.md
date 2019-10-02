@@ -13,7 +13,7 @@
 <!-- ABOUT THE PROJECT -->
 ## Flask Cookbook
 
-![Cookbook screenshot](app/static/img/FlaskCookBook.png)
+![Cookbook screenshot](images/FlaskCookBook.png)
 
 This is my project for Code Institute, a web application that let's you create, browse and edit recipes. I have also added user registration and rich CSS and Javascript visual enchancments.  
 
