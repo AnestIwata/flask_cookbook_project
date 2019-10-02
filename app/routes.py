@@ -216,6 +216,7 @@ def recipe(recipe_name):
         userIsAnAuthor = True
 
     content = re.split(r' *[\.\?!][\'"\)\]]* *', recipe.content)
+    del content[-1]
     short_summary = content[0]
 
     if comment_form.validate_on_submit():
