@@ -53,7 +53,7 @@ class RecipeForm(FlaskForm):
         u'Choose category:', query_factory=Category.get_all_categories_except_all, get_label='name',
         render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
     time_to_prepare = IntegerField(u'Time it takes to prepare food (input number of minutes):', validators=[
-                                   DataRequired(), NumberRange(min=1, max=48)])
+                                   DataRequired(), NumberRange(min=1, max=1000)])
     cooking_time = IntegerField(u'How long it takes to cook food (input number of hours):', validators=[
                                 DataRequired(), NumberRange(min=1, max=48)])
     serves_num_people = IntegerField(u'How many people can it be served for (input a number):', validators=[
