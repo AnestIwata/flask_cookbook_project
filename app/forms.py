@@ -43,7 +43,7 @@ class RecipeForm(FlaskForm):
         'Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()],
         render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
     allergens = SelectMultipleField(
-        'Select allergens (you can select more than one):', coerce=int, validators=[DataRequired()],
+        'Select allergens (you can select more than one):', coerce=int,
         render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
     image = FileField('Upload your image: ', validators=[FileRequired()])
     cuisine = QuerySelectField(
