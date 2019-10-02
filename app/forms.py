@@ -65,14 +65,41 @@ class RecipeForm(FlaskForm):
     cholesterol = IntegerField(u'Cholesterol:', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+class EditForm(FlaskForm):
+    content = TextAreaField('Your recipe instructions: ', validators=[
+                            Length(min=50, max=5000)])
+    ingredients = SelectMultipleField(
+        'Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()],
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
+    allergens = SelectMultipleField(
+        'Select allergens (you can select more than one):', coerce=int, validators=[DataRequired()],
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
+    image = FileField('Upload your image: ', validators=[FileRequired()])
+    cuisine = QuerySelectField(
+        u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines_except_all, get_label='name',
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
+    category = QuerySelectField(
+        u'Choose category:', query_factory=Category.get_all_categories_except_all, get_label='name',
+        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
+    time_to_prepare = IntegerField(u'Time it takes to prepare food (input number of minutes):', validators=[
+                                   DataRequired(), NumberRange(min=1, max=48)])
+    cooking_time = IntegerField(u'How long it takes to cook food (input number of hours):', validators=[
+                                DataRequired(), NumberRange(min=1, max=48)])
+    serves_num_people = IntegerField(u'How many people can it be served for (input a number):', validators=[
+                                     DataRequired(), NumberRange(min=1, max=100)])
+    calories = IntegerField(u'Calories:', validators=[DataRequired()])
+    carbohydrates = IntegerField(u'Carbohydrates:', validators=[DataRequired()])
+    proteins = IntegerField(u'Proteins:', validators=[DataRequired()])
+    fats = IntegerField(u'Fats:', validators=[DataRequired()])
+    cholesterol = IntegerField(u'Cholesterol:', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
     def __init__(self, original_name, *args, **kwargs):
-        super(RecipeForm, self).__init__(*args, **kwargs)
+        super(EditForm, self).__init__(*args, **kwargs)
         self.original_name = original_name
 
-    def validate_recipe_name(self, name):
-        print(str(name.data) + " " + str(self.original_name))
+    def validate_name(self, name):
         if name.data != self.original_name:
-            
             recipe = Recipe.query.filter_by(name=self.name.data).first()
             print(recipe)
             if recipe is not None:
