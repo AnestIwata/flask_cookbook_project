@@ -6,7 +6,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm, CommentForm
+from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm, CommentForm, EditForm
 from app.models import Recipe, User, Ingredient, Country, Category, Allergen, Cuisine, Comment
 from app.poppulate_database import Poppulate
 
@@ -84,7 +84,6 @@ def add_recipe():
             file_path = os.path.join(
                 "app/static/img/recipes_images",  filename)
             f.save(file_path)
-
             recipe = Recipe(
                 name=form.name.data,
                 content=form.content.data,
@@ -138,53 +137,58 @@ def add_recipe():
 def edit_recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     if current_user.is_authenticated and current_user == recipe.author:
-        form = form_ingredients_and_allergens(RecipeForm(obj=recipe, original_name=recipe.name))
-        if form.validate_on_submit() and form.validate_recipe_name:
+        form = form_ingredients_and_allergens(EditForm(obj=recipe, original_name=recipe.name))
+        if form.validate_on_submit():
             f = form.image.data
             filename = secure_filename(f.filename)
             file_path = os.path.join(
                 "app/static/img/recipes_images",  filename)
             f.save(file_path)
-
-            created_recipe = Recipe(
-                name = form.name.data,
-                content = form.content.data,
-                cuisine = form.cuisine.data,
-                category = form.category.data,
-                time_to_prepare = form.time_to_prepare.data,
-                serves_num_people = form.serves_num_people.data,
-                cooking_time = form.cooking_time.data,
-                image = "static/img/recipes_images/" + filename,
-                author = current_user,
+            new_recipe = Recipe(
+                name=recipe.name,
+                content=form.content.data,
+                cuisine=form.cuisine.data,
+                category=form.category.data,
+                time_to_prepare=form.time_to_prepare.data,
+                serves_num_people=form.serves_num_people.data,
+                cooking_time=form.cooking_time.data,
+                image="static/img/recipes_images/" + filename,
+                author=current_user,
                 calories = form.calories.data,
                 carbohydrates = form.carbohydrates.data,
                 proteins = form.proteins.data,
                 fats = form.fats.data,
                 cholesterol = form.cholesterol.data
             )
-
             ingredients_in_recipe = []
             for ingredient in form.ingredients.data:
                 queried_ingredient = Ingredient.query.filter_by(
                     id=ingredient).first()
                 ingredients_in_recipe.append(queried_ingredient)
-            created_recipe._ingredients = ingredients_in_recipe
+                print(ingredients_in_recipe)
+            new_recipe._ingredients = ingredients_in_recipe
 
             allergens_in_recipe = []
             for allergen in form.allergens.data:
                 queried_allergen = Allergen.query.filter_by(
                     id=allergen).first()
                 allergens_in_recipe.append(queried_allergen)
-            created_recipe._allergens = allergens_in_recipe
-            try:
-                db.session.query(Recipe).filter(Recipe.id==recipe.id).delete()
-                db.session.commit()
+            new_recipe._allergens = allergens_in_recipe
 
-                db.session.add(created_recipe)
+            try:
+                db.delete(recipe)
+                db.session.flush()
+                db.session.commit()
+                flash("Congrats, you have edited a recipe!")
+            except:
+                print("There was an error while saving changes.")
+            
+            try:
+                db.session.add(new_recipe)
                 db.session.commit()
             except:
                 print("There was an error while saving changes.")
-            flash("Congrats, you have edited a recipe!")
+
             return redirect(url_for('recipes_list'))
     else:
         flash("You need to login before you edit recipe.")
@@ -236,8 +240,9 @@ def recipe(recipe_name):
         
     else:
         print("There was an error")
-    return render_template("recipe_page.html", recipe=recipe, content=content, short_summary=short_summary, userIsAnAuthor=userIsAnAuthor,
-    upvotes=recipe.upvotes, comments=comments, comment_form=comment_form, nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
+    return render_template("recipe_page.html", recipe=recipe, content=content, short_summary=short_summary, 
+    userIsAnAuthor=userIsAnAuthor, upvotes=recipe.upvotes, comments=comments, comment_form=comment_form, 
+    nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
 
 
 @app.route('/upvote', methods=['POST'])
@@ -282,7 +287,9 @@ def recipes_stats():
     data = Category.query.filter(Category.id.in_(recipe_ids)).all()
     counted_ids = dict(Counter(recipe_ids))
     categories = [category.name for category in data ]
-    return render_template("recipes_stats.html", categories=json.dumps(categories), count=json.dumps(list(counted_ids.values())), recipes=json.dumps(recipe_names), upvotes=json.dumps(recipes_upvotes))
+    return render_template("recipes_stats.html", categories=json.dumps(categories), 
+    count=json.dumps(list(counted_ids.values())), recipes=json.dumps(recipe_names), 
+    upvotes=json.dumps(recipes_upvotes))
 
 @app.route('/search_handler', methods=["POST", "GET"])
 def search_handler():

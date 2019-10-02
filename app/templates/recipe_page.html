@@ -26,7 +26,7 @@
             <div class="col-lg-12 text-center">
                 <h4>{{ recipe.timestamp }}</h4>
                 <h1>{{ recipe.name }}</h1>
-                <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.author.name }}</div>
+                <div class="by"><i class="fa fa-user"></i>{{ recipe.author.name }}</div>
             </div>
             <div class="col-lg-8">
 
@@ -55,12 +55,12 @@
                 </div>
                 <div>
                     {% if userIsAnAuthor %}
-                    <button type="button" id="edit_btn" class="btn btn-default" >
+                    <button type="button" id="edit_btn" class="btn btn-default" onclick="window.location.href='{{url_for('edit_recipe', recipe_name=recipe.name)}}';">
                         <a class="a" href="{{url_for('edit_recipe', recipe_name=recipe.name)}}" >
                             Edit Recipe
                         </a>
                     </button>
-                    <button type="button" id="delete_btn" class="btn btn-default" >
+                    <button type="button" id="delete_btn" class="btn btn-default" onclick="window.location.href='{{url_for('delete_recipe', recipe_name=recipe.name)}}';">
                         <a class="a" href="{{url_for('delete_recipe', recipe_name=recipe.name)}}" >
                             Delete Recipe
                         </a>
