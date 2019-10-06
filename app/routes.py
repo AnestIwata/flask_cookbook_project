@@ -87,6 +87,7 @@ def add_recipe():
 
             recipe = Recipe(
                 name=form.name.data,
+                short_description = form.short_description.data,
                 content=form.content.data,
                 cuisine=form.cuisine.data,
                 category=form.category.data,
@@ -148,6 +149,7 @@ def edit_recipe(recipe_name):
             recipe.name = "non-existent"
             created_recipe = Recipe(
                 name = form.name.data,
+                short_description = form.short_description.data,
                 content = form.content.data,
                 cuisine = form.cuisine.data,
                 category = form.category.data,
@@ -217,7 +219,6 @@ def recipe(recipe_name):
 
     content = re.split(r' *[\.\?!][\'"\)\]]* *', recipe.content)
     del content[-1]
-    short_summary = content[0]
 
     if comment_form.validate_on_submit():
         created_comment = Comment(
@@ -237,7 +238,7 @@ def recipe(recipe_name):
         
     else:
         print("There was an error")
-    return render_template("recipe_page.html", recipe=recipe, content=content, short_summary=short_summary, userIsAnAuthor=userIsAnAuthor,
+    return render_template("recipe_page.html", recipe=recipe, content=content, userIsAnAuthor=userIsAnAuthor,
     upvotes=recipe.upvotes, comments=comments, comment_form=comment_form, nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
 
 

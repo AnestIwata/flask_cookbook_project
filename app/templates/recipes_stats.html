@@ -14,17 +14,16 @@
     </div>     
 <script>
   var categoryctx = document.getElementById('categoryChart').getContext('2d');
-  var upvotesctx = document.getElementById('upvotesChart').getContext('2d');
   var categories = {{ categories|safe }}
-  var upvotes = {{ upvotes|safe }}
-  var recipes = {{ recipes|safe }}
+  var count = {{ count|safe }}
+  
   var myChart = new Chart(categoryctx, {
       type: 'pie',
       data: {
           labels: categories,
           datasets: [{
               label: '# of Votes',
-              data: {{ count|safe }},
+              data: count,
               backgroundColor: [
                   'rgba(255, 99, 132, 0.2)',
                   'rgba(54, 162, 235, 0.2)',
@@ -45,6 +44,10 @@
           }]
       }
   });
+
+  var upvotesctx = document.getElementById('upvotesChart').getContext('2d');
+  var upvotes = {{ upvotes|safe }}
+  var recipes = {{ recipes|safe }}
 
   var myChart = new Chart(upvotesctx, {
       type: 'bar',
