@@ -36,7 +36,8 @@ class RegistrationForm(FlaskForm):
 
 
 class RecipeForm(FlaskForm):
-    name = StringField('Recipe Name:', validators=[DataRequired()])
+    name = StringField('Recipe Name:', validators=[DataRequired(), Length(min=2, max=100)])
+    short_description = StringField('Give a short description of your recipe:', validators=[DataRequired(), Length(min=5, max=300)])
     content = TextAreaField('Your recipe instructions: ', validators=[
                             Length(min=50, max=5000)])
     ingredients = SelectMultipleField(
