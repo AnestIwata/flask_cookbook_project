@@ -17,6 +17,7 @@ allergens_in_recipe = db.Table(
     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'))
 )
 
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -34,9 +35,11 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
 
 class Recipe(db.Model):
     __searchable__ = ['name']
@@ -76,24 +79,25 @@ class Recipe(db.Model):
 
     def serialize(self):
         return {
-           'id': self.id,
-           'name': self.name,
-           'content' : self.content,
-           'timestamp' : self.timestamp,
-           'user_id' : self.user_id,
-           'cuisine_id' : self.cuisine_id,
-           'category_id' : self.category_id,
-           'calories' : self.calories,
-           'carbohydrates' : self.carbohydrates,
-           'proteins' : self.proteins,
-           'fats' : self.fats,
-           'cholesterol' : self.cholesterol,
-           'serves_num_people' : self.serves_num_people,
-           'time_to_prepare' : self.time_to_prepare,
-           'cooking_time' : self.cooking_time,
-           'image' : self.image,
-           'upvotes' : self.upvotes
+            'id': self.id,
+            'name': self.name,
+            'content': self.content,
+            'timestamp': self.timestamp,
+            'user_id': self.user_id,
+            'cuisine_id': self.cuisine_id,
+            'category_id': self.category_id,
+            'calories': self.calories,
+            'carbohydrates': self.carbohydrates,
+            'proteins': self.proteins,
+            'fats': self.fats,
+            'cholesterol': self.cholesterol,
+            'serves_num_people': self.serves_num_people,
+            'time_to_prepare': self.time_to_prepare,
+            'cooking_time': self.cooking_time,
+            'image': self.image,
+            'upvotes': self.upvotes
         }
+
 
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -111,10 +115,11 @@ class Ingredient(db.Model):
 
     def serialize(self):
         return {
-            'id' : self.id,
-            'ingredient_name' : self.name,
-            'recipes' : self.recipes
+            'id': self.id,
+            'ingredient_name': self.name,
+            'recipes': self.recipes
         }
+
 
 class Allergen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -132,10 +137,11 @@ class Allergen(db.Model):
 
     def serialize(self):
         return {
-            'id' : self.id,
-            'allergen_name' : self.name,
-            'recipes' : self.recipes
+            'id': self.id,
+            'allergen_name': self.name,
+            'recipes': self.recipes
         }
+
 
 class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -148,6 +154,7 @@ class Country(db.Model):
     def get_all_countries():
         return Country.query
 
+
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
@@ -158,9 +165,10 @@ class Category(db.Model):
 
     def get_all_categories():
         return Category.query
-        
+
     def get_all_categories_except_all():
-        return Category.query.filter(Category.name!="All").all()
+        return Category.query.filter(Category.name != "All").all()
+
 
 class Cuisine(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -174,7 +182,8 @@ class Cuisine(db.Model):
         return Cuisine.query
 
     def get_all_cuisines_except_all():
-        return Cuisine.query.filter(Cuisine.name!="All").all()
+        return Cuisine.query.filter(Cuisine.name != "All").all()
+
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -184,7 +193,6 @@ class Comment(db.Model):
     comment = db.Column(db.String(500))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+
     def __repr__(self):
         return '<Comment {}>'.format(self.name)
-
-

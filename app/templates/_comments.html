@@ -1,20 +1,20 @@
 {% block main %}
 
 <div class="blog-comment">
-    <h3>Comments</h3>
-    <hr />
-    <ul class="comments">
-        {% for comment in comments %}
-        <li>
-            <div class="post-comments">
-                <p class="meta">{{ comment.timestamp }}  {{ comment.name }} {{ comment.email }} says : <i
-                        class="pull-right"></i></p>
-                <p>
-                    {{ comment.comment }}
-                </p>
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
+  <h3>Comments</h3>
+  <hr />
+  <ul class="comments">
+    {% for comment in comments %}
+    <li>
+      <div class="post-comments">
+        <p class="meta">{{ comment.timestamp }} {{ comment.name }} {{ comment.email }} says : <i class="pull-right"></i>
+        </p>
+        <p>
+          {{ comment.comment }}
+        </p>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
 
-    {% endblock %}
+  {% endblock %}

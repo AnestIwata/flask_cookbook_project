@@ -36,23 +36,25 @@ class RegistrationForm(FlaskForm):
 
 
 class RecipeForm(FlaskForm):
-    name = StringField('Recipe Name:', validators=[DataRequired(), Length(min=2, max=100)])
-    short_description = StringField('Give a short description of your recipe:', validators=[DataRequired(), Length(min=5, max=300)])
+    name = StringField('Recipe Name:', validators=[
+                       DataRequired(), Length(min=2, max=100)])
+    short_description = StringField('Give a short description of your recipe:', validators=[
+                                    DataRequired(), Length(min=5, max=300)])
     content = TextAreaField('Your recipe instructions: ', validators=[
                             Length(min=50, max=5000)])
     ingredients = SelectMultipleField(
         'Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()],
-        render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
+        render_kw={'class': 'form-control js-search-category select2-hidden-accessible', 'multiple': 'multiple'})
     allergens = SelectMultipleField(
         'Select allergens (you can select more than one):', coerce=int,
-        render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
+        render_kw={'class': 'form-control js-search-category select2-hidden-accessible', 'multiple': 'multiple'})
     image = FileField('Upload your image: ', validators=[FileRequired()])
     cuisine = QuerySelectField(
         u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines_except_all, get_label='name',
-        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
+        render_kw={'class': 'form-control js-search-category select2-hidden-accessible'})
     category = QuerySelectField(
         u'Choose category:', query_factory=Category.get_all_categories_except_all, get_label='name',
-        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
+        render_kw={'class': 'form-control js-search-category select2-hidden-accessible'})
     time_to_prepare = IntegerField(u'Time it takes to prepare food (input number of minutes):', validators=[
                                    DataRequired(), NumberRange(min=1, max=1000)])
     cooking_time = IntegerField(u'How long it takes to cook food (input number of hours):', validators=[
@@ -60,7 +62,8 @@ class RecipeForm(FlaskForm):
     serves_num_people = IntegerField(u'How many people can it be served for (input a number):', validators=[
                                      DataRequired(), NumberRange(min=1, max=100)])
     calories = IntegerField(u'Calories:', validators=[DataRequired()])
-    carbohydrates = IntegerField(u'Carbohydrates:', validators=[DataRequired()])
+    carbohydrates = IntegerField(
+        u'Carbohydrates:', validators=[DataRequired()])
     proteins = IntegerField(u'Proteins:', validators=[DataRequired()])
     fats = IntegerField(u'Fats:', validators=[DataRequired()])
     cholesterol = IntegerField(u'Cholesterol:', validators=[DataRequired()])
@@ -73,12 +76,13 @@ class RecipeForm(FlaskForm):
     def validate_recipe_name(self, name):
         print(str(name.data) + " " + str(self.original_name))
         if name.data != self.original_name:
-            
+
             recipe = Recipe.query.filter_by(name=self.name.data).first()
             print(recipe)
             if recipe is not None:
                 print(str(name.data) + " " + str(self.original_name))
                 raise ValidationError('Please use a different name.')
+
 
 class ContactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
@@ -86,6 +90,7 @@ class ContactForm(FlaskForm):
     subject = StringField('Subject', validators=[DataRequired()])
     message = TextAreaField('Message: ', validators=[Length(min=10, max=5000)])
     submit = SubmitField('Submit')
+
 
 class CommentForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
@@ -95,21 +100,22 @@ class CommentForm(FlaskForm):
     website = StringField('Website')
     submit = SubmitField('Submit')
 
+
 class SearchForm(FlaskForm):
     cuisine = QuerySelectField(
         u'Choose cuisine:', query_factory=Cuisine.get_all_cuisines, get_label='name',
-        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
+        render_kw={'class': 'form-control js-search-category select2-hidden-accessible'})
     category = QuerySelectField(
         u'Choose category:', query_factory=Category.get_all_categories, get_label='name',
-        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
+        render_kw={'class': 'form-control js-search-category select2-hidden-accessible'})
     ingredients = SelectMultipleField(
         'Select ingredients (you can select more than one):', coerce=int,
-        render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
+        render_kw={'class': 'form-control js-search-category select2-hidden-accessible', 'multiple': 'multiple'})
     allergens = SelectMultipleField(
         'No allergens (you can select more than one):', coerce=int,
-        render_kw={'class':'form-control js-search-category select2-hidden-accessible', 'multiple':'multiple'})
-    any_ingredients = SelectField('Recipe needs to have', coerce=int, 
-        render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
+        render_kw={'class': 'form-control js-search-category select2-hidden-accessible', 'multiple': 'multiple'})
+    any_ingredients = SelectField('Recipe needs to have', coerce=int,
+                                  render_kw={'class': 'form-control js-search-category select2-hidden-accessible'})
     sortkey = SelectField('Sort recipes by: ')
     submit = SubmitField('Search Recipes')
 
@@ -119,4 +125,3 @@ class SearchForm(FlaskForm):
         if 'csrf_enabled' not in kwargs:
             kwargs['csrf_enabled'] = False
         super(SearchForm, self).__init__(*args, **kwargs)
-
