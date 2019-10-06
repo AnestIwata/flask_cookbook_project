@@ -18,6 +18,10 @@
                             {{ form.name(class_="form-control") }}
                         </div>
                         <div class="form-group required">
+                            {{ form.short_description.label}}
+                            {{ form.short_description(class_="form-control", rows="4") }}
+                        </div>
+                        <div class="form-group required">
                             {{ form.content.label}}
                             {{ form.content(class_="form-control", rows="10") }}
                         </div>
