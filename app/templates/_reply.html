@@ -2,33 +2,33 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 <div class="reply">
-    <h3>Leave a Reply</h3>
-    <form method='POST' id='category_form' enctype="multipart/form-data">
-        {{ comment_form.hidden_tag() }}
-        <div class="form-group">
-            <div class="form-group required">
-                {{ comment_form.comment.label }}
-                {{ comment_form.comment(class_="form-control") }}
-            </div>
-        </div>
-        <div class="row">
-                <div class="form-group required col-lg-4">
-                    {{ comment_form.name.label }}
-                    {{ comment_form.name(class_="form-control") }}
-                </div>
-                <div class="form-group required col-lg-4">
-                    {{ comment_form.email.label }}
-                    {{ comment_form.email(class_="form-control") }}
-                </div>
-                <div class="form-group required col-lg-4">
-                    {{ comment_form.website.label }}
-                    {{ comment_form.website(class_="form-control") }}
-                </div>
-        </div>
-        <p class="form-submit">
-                {{ comment_form.submit(class_="btn btn-submit btn-block") }}
-        </p>
-    </form>
+  <h3>Leave a Reply</h3>
+  <form method='POST' id='category_form' enctype="multipart/form-data">
+    {{ comment_form.hidden_tag() }}
+    <div class="form-group">
+      <div class="form-group required">
+        {{ comment_form.comment.label }}
+        {{ comment_form.comment(class_="form-control") }}
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group required col-lg-4">
+        {{ comment_form.name.label }}
+        {{ comment_form.name(class_="form-control") }}
+      </div>
+      <div class="form-group required col-lg-4">
+        {{ comment_form.email.label }}
+        {{ comment_form.email(class_="form-control") }}
+      </div>
+      <div class="form-group required col-lg-4">
+        {{ comment_form.website.label }}
+        {{ comment_form.website(class_="form-control") }}
+      </div>
+    </div>
+    <p class="form-submit">
+      {{ comment_form.submit(class_="btn btn-submit btn-block") }}
+    </p>
+  </form>
 </div>
 
 {% endblock %}

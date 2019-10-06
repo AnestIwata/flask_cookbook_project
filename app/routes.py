@@ -1,6 +1,9 @@
-import os, re, json, sqlalchemy
+import os
+import re
+import json
+import sqlalchemy
 from collections import Counter
-from datetime import datetime 
+from datetime import datetime
 from flask import Flask, flash, redirect, render_template, request, url_for, jsonify, session
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
@@ -19,7 +22,7 @@ def index():
     recipes = Recipe.query.limit(3).all()
     empty = False
     if not recipes:
-        empty=True
+        empty = True
     return render_template("index.html", recipes=recipes, empty=empty, sortkey='timestamp', reverse=True)
 
 # Login page route
@@ -38,7 +41,7 @@ def login():
         recipes = Recipe.query.limit(3).all()
         empty = False
         if not recipes:
-            empty=True
+            empty = True
         return render_template('index.html', title='Homepage', recipes=recipes, empty=empty, sortkey='timestamp', reverse=True)
     return render_template('login.html', title='Sign In', form=form)
 
@@ -74,6 +77,7 @@ def fetch_recipes():
     recipes_comprehension = Recipe.query.all()
     return jsonify(new_recipes=[recipe.serialize() for recipe in recipes_comprehension])
 
+
 @app.route('/add_recipe', methods=["GET", "POST"])
 def add_recipe():
     if current_user.is_authenticated:
@@ -87,7 +91,7 @@ def add_recipe():
 
             recipe = Recipe(
                 name=form.name.data,
-                short_description = form.short_description.data,
+                short_description=form.short_description.data,
                 content=form.content.data,
                 cuisine=form.cuisine.data,
                 category=form.category.data,
@@ -96,11 +100,11 @@ def add_recipe():
                 cooking_time=form.cooking_time.data,
                 image="static/img/recipes_images/" + filename,
                 author=current_user,
-                calories = form.calories.data,
-                carbohydrates = form.carbohydrates.data,
-                proteins = form.proteins.data,
-                fats = form.fats.data,
-                cholesterol = form.cholesterol.data
+                calories=form.calories.data,
+                carbohydrates=form.carbohydrates.data,
+                proteins=form.proteins.data,
+                fats=form.fats.data,
+                cholesterol=form.cholesterol.data
             )
 
             ingredients_in_recipe = []
@@ -124,7 +128,7 @@ def add_recipe():
                 print("There was a DB error while saving Recipe.")
             print("Recipe added")
 
-            flash("Congrats, you have added a recipe!") 
+            flash("Congrats, you have added a recipe!")
             return redirect(url_for('recipe', recipe_name=form.name.data))
         else:
             print("Something has failed")
@@ -139,7 +143,8 @@ def add_recipe():
 def edit_recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     if current_user.is_authenticated and current_user == recipe.author:
-        form = form_ingredients_and_allergens(RecipeForm(obj=recipe, original_name=recipe.name))
+        form = form_ingredients_and_allergens(
+            RecipeForm(obj=recipe, original_name=recipe.name))
         if form.validate_on_submit() and form.validate_recipe_name:
             f = form.image.data
             filename = secure_filename(f.filename)
@@ -148,21 +153,21 @@ def edit_recipe(recipe_name):
             f.save(file_path)
             recipe.name = "non-existent"
             created_recipe = Recipe(
-                name = form.name.data,
-                short_description = form.short_description.data,
-                content = form.content.data,
-                cuisine = form.cuisine.data,
-                category = form.category.data,
-                time_to_prepare = form.time_to_prepare.data,
-                serves_num_people = form.serves_num_people.data,
-                cooking_time = form.cooking_time.data,
-                image = "static/img/recipes_images/" + filename,
-                author = current_user,
-                calories = form.calories.data,
-                carbohydrates = form.carbohydrates.data,
-                proteins = form.proteins.data,
-                fats = form.fats.data,
-                cholesterol = form.cholesterol.data
+                name=form.name.data,
+                short_description=form.short_description.data,
+                content=form.content.data,
+                cuisine=form.cuisine.data,
+                category=form.category.data,
+                time_to_prepare=form.time_to_prepare.data,
+                serves_num_people=form.serves_num_people.data,
+                cooking_time=form.cooking_time.data,
+                image="static/img/recipes_images/" + filename,
+                author=current_user,
+                calories=form.calories.data,
+                carbohydrates=form.carbohydrates.data,
+                proteins=form.proteins.data,
+                fats=form.fats.data,
+                cholesterol=form.cholesterol.data
             )
 
             ingredients_in_recipe = []
@@ -179,7 +184,8 @@ def edit_recipe(recipe_name):
                 allergens_in_recipe.append(queried_allergen)
             created_recipe._allergens = allergens_in_recipe
             try:
-                db.session.query(Recipe).filter(Recipe.id==recipe.id).delete()
+                db.session.query(Recipe).filter(
+                    Recipe.id == recipe.id).delete()
                 db.session.commit()
 
                 db.session.add(created_recipe)
@@ -208,7 +214,8 @@ def delete_recipe(recipe_name):
     flash("Your recipe has been deleted.")
     return redirect(url_for('recipes_list'))
 
-@app.route('/recipe/<recipe_name>',methods=['GET','POST'])
+
+@app.route('/recipe/<recipe_name>', methods=['GET', 'POST'])
 def recipe(recipe_name):
     recipe = Recipe.query.filter_by(name=recipe_name).first_or_404()
     userIsAnAuthor = False
@@ -222,11 +229,11 @@ def recipe(recipe_name):
 
     if comment_form.validate_on_submit():
         created_comment = Comment(
-            name = comment_form.name.data,
-            email = comment_form.email.data,
-            website = comment_form.website.data,
-            comment = comment_form.comment.data,
-            recipe_id= recipe.id
+            name=comment_form.name.data,
+            email=comment_form.email.data,
+            website=comment_form.website.data,
+            comment=comment_form.comment.data,
+            recipe_id=recipe.id
         )
         try:
             db.session.add(created_comment)
@@ -235,39 +242,44 @@ def recipe(recipe_name):
             print("Comment was successfuly added")
         except:
             print("There was a DB error while saving Comment.")
-        
+
     else:
         print("There was an error")
     return render_template("recipe_page.html", recipe=recipe, content=content, userIsAnAuthor=userIsAnAuthor,
-    upvotes=recipe.upvotes, comments=comments, comment_form=comment_form, nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
+                           upvotes=recipe.upvotes, comments=comments, comment_form=comment_form, nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
 
 
 @app.route('/upvote', methods=['POST'])
 def upvote():
     if request.method == "POST":
-        data_received = json.loads(request.data) 
-        recipe = Recipe.query.filter_by(name=data_received['recipe_name']).first()
+        data_received = json.loads(request.data)
+        recipe = Recipe.query.filter_by(
+            name=data_received['recipe_name']).first()
         if recipe:
             recipe.upvotes += 1
             db.session.commit()
-            return json.dumps({'upvotes' : str(recipe.upvotes)})
-        return json.dumps({'status' : 'no recipe found'})
+            return json.dumps({'upvotes': str(recipe.upvotes)})
+        return json.dumps({'status': 'no recipe found'})
     return redirect(url_for('index'))
-    
+
+
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
     form = form_ingredients_and_allergens(SearchForm())
     page = request.args.get('page', 1, type=int)
-    recipes = Recipe.query.order_by(Recipe.timestamp.desc()).paginate(page, 9, False)
+    recipes = Recipe.query.order_by(
+        Recipe.timestamp.desc()).paginate(page, 9, False)
     empty = False
     if not recipes.items:
         empty = True
 
-    next_url = url_for('recipes_list', page=recipes.next_num) if recipes.has_next else None
-    prev_url = url_for('recipes_list', page=recipes.prev_num) if recipes.has_prev else None
+    next_url = url_for(
+        'recipes_list', page=recipes.next_num) if recipes.has_next else None
+    prev_url = url_for(
+        'recipes_list', page=recipes.prev_num) if recipes.has_prev else None
 
     return render_template("recipes_list.html", title='Recipes', form=form, recipes=recipes.items,
-        next_url=next_url, prev_url=prev_url, empty=empty)
+                           next_url=next_url, prev_url=prev_url, empty=empty)
 
 
 @app.route('/contact', methods=["GET", "POST"])
@@ -275,7 +287,8 @@ def contact():
     form = ContactForm()
     return render_template("contact.html", form=form, )
 
-@app.route('/recipes_stats', methods=["GET"]) 
+
+@app.route('/recipes_stats', methods=["GET"])
 def recipes_stats():
     recipes = Recipe.query.limit(10).all()
     recipe_ids = [recipe.category_id for recipe in recipes]
@@ -283,8 +296,9 @@ def recipes_stats():
     recipes_upvotes = [recipe.upvotes for recipe in recipes]
     data = Category.query.filter(Category.id.in_(recipe_ids)).all()
     counted_ids = dict(Counter(recipe_ids))
-    categories = [category.name for category in data ]
+    categories = [category.name for category in data]
     return render_template("recipes_stats.html", categories=json.dumps(categories), count=json.dumps(list(counted_ids.values())), recipes=json.dumps(recipe_names), upvotes=json.dumps(recipes_upvotes))
+
 
 @app.route('/search_handler', methods=["POST", "GET"])
 def search_handler():
@@ -298,6 +312,7 @@ def search_handler():
     page = request.args.get('page', 1, type=int)
 
     search_result = []
+
     def custom_filter_statement(category_id, cuisine_id):
         if category_id == "1" and cuisine_id == "1":
             return sqlalchemy.sql.true()
@@ -305,16 +320,16 @@ def search_handler():
             return Recipe.category_id == category_id
         elif category_id == "1":
             return Recipe.cuisine_id == cuisine_id
-        return sqlalchemy.and_(Recipe.category_id==category_id, Recipe.cuisine_id==cuisine_id)
+        return sqlalchemy.and_(Recipe.category_id == category_id, Recipe.cuisine_id == cuisine_id)
 
     def order_recipe_by(sortkey):
-        if sortkey=="newest":
+        if sortkey == "newest":
             return Recipe.timestamp.desc()
-        elif sortkey=="oldest":
+        elif sortkey == "oldest":
             return Recipe.timestamp.asc()
-        elif sortkey=="popularity":
+        elif sortkey == "popularity":
             return Recipe.upvotes.desc()
-        elif sortkey=="name":
+        elif sortkey == "name":
             return Recipe.name
         else:
             return Recipe.timestamp.asc()
@@ -324,22 +339,25 @@ def search_handler():
             Recipe._ingredients.any(Ingredient.id.in_(ingredients_ids)),
             ~Recipe._allergens.any(Allergen.id.in_(allergens_ids)),
             custom_filter_statement(category_id, cuisine_id)
-            ).order_by(Recipe.timestamp
-            ).paginate(page, 9, False)
+        ).order_by(Recipe.timestamp
+                   ).paginate(page, 9, False)
     else:
         search_result = Recipe.query.filter(
             ~Recipe._allergens.any(Allergen.id.in_(allergens_ids)),
             custom_filter_statement(category_id, cuisine_id)
         ).order_by(order_recipe_by(sortkey)
-        ).paginate(page, 9, False)
-        
+                   ).paginate(page, 9, False)
+
     reverse = False if sortkey == 'name' else True
 
-    next_url = url_for('recipes_list', page=search_result.next_num) if search_result.has_next else None
-    prev_url = url_for('recipes_list', page=search_result.prev_num) if search_result.has_prev else None
-    
+    next_url = url_for(
+        'recipes_list', page=search_result.next_num) if search_result.has_next else None
+    prev_url = url_for(
+        'recipes_list', page=search_result.prev_num) if search_result.has_prev else None
+
     return render_template("recipes_list.html", title='Recipes', form=form, recipes=search_result.items,
-        next_url=next_url, prev_url=prev_url)
+                           next_url=next_url, prev_url=prev_url)
+
 
 def form_ingredients_and_allergens(form):
     form.ingredients.choices = db.session.query(
@@ -347,7 +365,9 @@ def form_ingredients_and_allergens(form):
     form.allergens.choices = db.session.query(
         Allergen.id, Allergen.name).all()
     if(isinstance(form, SearchForm)):
-        form.sortkey.choices = [('newest', 'Newest'), ('oldest', 'Oldest'), ('popularity', 'Popularity'), ('name', 'Name')]
-        form.any_ingredients.choices = [(1, "All of selected ingredients"), (2, "Any of selected ingredients")]
+        form.sortkey.choices = [('newest', 'Newest'), ('oldest', 'Oldest'),
+                                ('popularity', 'Popularity'), ('name', 'Name')]
+        form.any_ingredients.choices = [
+            (1, "All of selected ingredients"), (2, "Any of selected ingredients")]
 
     return form

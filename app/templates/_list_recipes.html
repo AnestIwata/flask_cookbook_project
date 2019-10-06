@@ -2,27 +2,27 @@
 <!-- List Recipes -->
 
 <div class="list">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <form action="POST">
-                    <div class="form-group col-lg-12">
-                        <h5><i class="fa fa-cutlery" aria-hidden="true"></i> All Recipes</h5>
-                        {% if empty %}
-                        <div>
-                            <h2>No Recipes available...</h2>
-                        </div>
-                        {% endif %}
-                    </div>
-                </form>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <form action="POST">
+          <div class="form-group col-lg-12">
+            <h5><i class="fa fa-cutlery" aria-hidden="true"></i> All Recipes</h5>
+            {% if empty %}
+            <div>
+              <h2>No Recipes available...</h2>
             </div>
-            
-            {% for recipe in recipes %}
-                {% include '_recipe.html' %}
-            {% endfor %}
-            
-        </div>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+
+      {% for recipe in recipes %}
+      {% include '_recipe.html' %}
+      {% endfor %}
+
     </div>
+  </div>
 </div>
 
 {% endblock %}

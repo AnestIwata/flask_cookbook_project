@@ -1,138 +1,138 @@
 {% extends 'base.html' %}
 {% block app_content %}
 <script>
-    $(document).on('click', '#upvote_btn', function(event) {
-        $.ajax({
-            url : '/upvote',
-            type : "post",
-            contentType: 'application/json;charset=UTF-8',
-            dataType: "json",
-            data : JSON.stringify({'recipe_name' : $('#upvote_btn').data('recipe_name')}),
-            success : function(response) {
+  $(document).on('click', '#upvote_btn', function (event) {
+    $.ajax({
+      url: '/upvote',
+      type: "post",
+      contentType: 'application/json;charset=UTF-8',
+      dataType: "json",
+      data: JSON.stringify({ 'recipe_name': $('#upvote_btn').data('recipe_name') }),
+      success: function (response) {
 
-                $("#upvote_btn").html("Likes: " + response.upvotes)
-            },
-            error : function(xhr) {
-                console.log(xhr);
-            }
-        });
-        event.preventDefault();
+        $("#upvote_btn").html("Likes: " + response.upvotes)
+      },
+      error: function (xhr) {
+        console.log(xhr);
+      }
     });
+    event.preventDefault();
+  });
 </script>
 <!-- Detail Recipes-->
 <div class="recipe-detail">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-12 text-center">
-                <h4>{{ recipe.timestamp }}</h4>
-                <h1>{{ recipe.name }}</h1>
-                <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.author.name }}</div>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-12 text-center">
+        <h4>{{ recipe.timestamp }}</h4>
+        <h1>{{ recipe.name }}</h1>
+        <div class="by"><i class="fa fa-user" aria-hidden="true"></i>{{ recipe.author.name }}</div>
+      </div>
+      <div class="col-lg-8">
+
+
+        <img src="{{ url_for('static', filename=recipe.image) }}" alt="Image of the Dish" id="page_image">
+
+
+        <div class="info">
+          <div class="row">
+            <div class="col-lg-4 col-sm-4">
+              <p>Serves:</p>
+              <p><strong><i class="fa fa-users" aria-hidden="true"></i>{{ recipe.serves_num_people }}
+                  people</strong></p>
             </div>
-            <div class="col-lg-8">
-
-
-                <img src="{{ url_for('static', filename=recipe.image) }}" alt="Image of the Dish" id="page_image">
-
-
-                <div class="info">
-                    <div class="row">
-                        <div class="col-lg-4 col-sm-4">
-                            <p>Serves:</p>
-                            <p><strong><i class="fa fa-users" aria-hidden="true"></i>{{ recipe.serves_num_people }}
-                                    people</strong></p>
-                        </div>
-                        <div class="col-lg-4 col-sm-4">
-                            <p>Prep Time:</p>
-                            <p><strong><i class="fa fa-clock-o" aria-hidden="true"></i>{{ recipe.time_to_prepare }}
-                                    min</strong></p>
-                        </div>
-                        <div class="col-lg-4 col-sm-4">
-                            <p>Cooking:</p>
-                            <p><strong><i class="fa fa-clock-o" aria-hidden="true"></i>{{ recipe.cooking_time }}
-                                    Hour</strong></p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    {% if userIsAnAuthor %}
-                    <button type="button" id="edit_btn" class="btn btn-default" >
-                        <a class="a" href="{{url_for('edit_recipe', recipe_name=recipe.name)}}" >
-                            Edit Recipe
-                        </a>
-                    </button>
-                    <button type="button" id="delete_btn" class="btn btn-default" >
-                        <a class="a" href="{{url_for('delete_recipe', recipe_name=recipe.name)}}" >
-                            Delete Recipe
-                        </a>
-                    </button>
-                    {% endif %}
-                    {% if current_user.is_authenticated %}
-                    <button type="button" id="upvote_btn" class="btn btn-default" data-recipe_name="{{ recipe.name }}">
-                            Likes: {{ recipe.upvotes }}
-                    </button>
-                    {% endif %}
-                </div>
-               
-                <div>
-
-                    <p>{{ recipe.short_description }}</p>
-                </div>
-                <div class="tag">
-                    {% for ingredient in recipe._ingredients %}
-                    <a href="#">{{ ingredient.name }}</a>
-                    {% endfor %}
-                </div>
-
-                <div class="ingredient-direction">
-                    <div class="row">
-                        <div class="col-lg-6 col-sm-6">
-                            <h3>Ingredients</h3>
-                            <ul class="ingredients">
-                                {% for ingredient in recipe._ingredients %}
-                                <li>
-                                    {{ ingredient.name }}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                            <h3>Allergens</h3>
-                            <ul class="ingredients">
-                                {% for allergen in recipe._allergens %}
-                                <li>
-                                    {{ allergen.name }}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                            <h3>Information</h3>
-                            <ul class="ingredients">
-                                <li>Cuisine: <b>{{ recipe.cuisine.name }}</b></li>
-                                <li>Category: <b>{{ recipe.category.name }}</b></li>
-                                <li>Author: <b>{{ recipe.author.username }}</b></li>
-                                <li>Where is author from: <br><b>{{ recipe.author.country.name }}</b></li>
-
-                            </ul>
-                        </div>
-                        <div class="col-lg-6 col-sm-6">
-                            <h3>Directions</h3>
-                            <ol class="directions">
-                                {% for step in content %}
-                                <li>{{ step }}</li>
-                                {% endfor %}
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-
-                {% include "_nutrition_facts.html" %}
-
-                {% include '_comments.html' %}
-
-                {% include '_reply.html' %}
-
+            <div class="col-lg-4 col-sm-4">
+              <p>Prep Time:</p>
+              <p><strong><i class="fa fa-clock-o" aria-hidden="true"></i>{{ recipe.time_to_prepare }}
+                  min</strong></p>
             </div>
-
+            <div class="col-lg-4 col-sm-4">
+              <p>Cooking:</p>
+              <p><strong><i class="fa fa-clock-o" aria-hidden="true"></i>{{ recipe.cooking_time }}
+                  Hour</strong></p>
+            </div>
+          </div>
         </div>
+        <div>
+          {% if userIsAnAuthor %}
+          <button type="button" id="edit_btn" class="btn btn-default">
+            <a class="a" href="{{url_for('edit_recipe', recipe_name=recipe.name)}}">
+              Edit Recipe
+            </a>
+          </button>
+          <button type="button" id="delete_btn" class="btn btn-default">
+            <a class="a" href="{{url_for('delete_recipe', recipe_name=recipe.name)}}">
+              Delete Recipe
+            </a>
+          </button>
+          {% endif %}
+          {% if current_user.is_authenticated %}
+          <button type="button" id="upvote_btn" class="btn btn-default" data-recipe_name="{{ recipe.name }}">
+            Likes: {{ recipe.upvotes }}
+          </button>
+          {% endif %}
+        </div>
+
+        <div>
+
+          <p>{{ recipe.short_description }}</p>
+        </div>
+        <div class="tag">
+          {% for ingredient in recipe._ingredients %}
+          <a href="#">{{ ingredient.name }}</a>
+          {% endfor %}
+        </div>
+
+        <div class="ingredient-direction">
+          <div class="row">
+            <div class="col-lg-6 col-sm-6">
+              <h3>Ingredients</h3>
+              <ul class="ingredients">
+                {% for ingredient in recipe._ingredients %}
+                <li>
+                  {{ ingredient.name }}
+                </li>
+                {% endfor %}
+              </ul>
+              <h3>Allergens</h3>
+              <ul class="ingredients">
+                {% for allergen in recipe._allergens %}
+                <li>
+                  {{ allergen.name }}
+                </li>
+                {% endfor %}
+              </ul>
+              <h3>Information</h3>
+              <ul class="ingredients">
+                <li>Cuisine: <b>{{ recipe.cuisine.name }}</b></li>
+                <li>Category: <b>{{ recipe.category.name }}</b></li>
+                <li>Author: <b>{{ recipe.author.username }}</b></li>
+                <li>Where is author from: <br><b>{{ recipe.author.country.name }}</b></li>
+
+              </ul>
+            </div>
+            <div class="col-lg-6 col-sm-6">
+              <h3>Directions</h3>
+              <ol class="directions">
+                {% for step in content %}
+                <li>{{ step }}</li>
+                {% endfor %}
+              </ol>
+            </div>
+          </div>
+        </div>
+
+
+        {% include "_nutrition_facts.html" %}
+
+        {% include '_comments.html' %}
+
+        {% include '_reply.html' %}
+
+      </div>
+
     </div>
+  </div>
 </div>
 </div>
 {% endblock %}
