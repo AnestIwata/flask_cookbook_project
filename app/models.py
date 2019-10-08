@@ -45,7 +45,7 @@ class Recipe(db.Model):
     __searchable__ = ['name']
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
-    short_description = db.Column(db.String(64))
+    short_description = db.Column(db.String(128))
     content = db.Column(db.String(50000))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
