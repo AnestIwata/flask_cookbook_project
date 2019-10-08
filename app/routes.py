@@ -3,13 +3,8 @@ import re
 import json
 import sqlalchemy
 from collections import Counter
-<<<<<<< HEAD
 from datetime import datetime
 from flask import Flask, flash, redirect, render_template, request, url_for, jsonify, session
-=======
-from datetime import datetime 
-from flask import Flask, flash, redirect, render_template, request, url_for, jsonify, session, g, current_app
->>>>>>> parent of 557a0e6... New chart and removed unused search functionality
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
 from werkzeug.urls import url_parse
@@ -262,7 +257,6 @@ def recipe(recipe_name):
 @app.route('/upvote', methods=['POST'])
 def upvote():
     if request.method == "POST":
-<<<<<<< HEAD
         data_received = json.loads(request.data)
         recipe = Recipe.query.filter_by(
             name=data_received['recipe_name']).first()
@@ -274,35 +268,12 @@ def upvote():
     return redirect(url_for('index'))
 
 
-=======
-
-        data_received = json.loads(request.data) 
-        print(data_received)
-        recipe = Recipe.query.filter_by(name=data_received['recipe_name']).first()
-        print(recipe)
-        if recipe:
-            recipe.upvotes += 1
-            db.session.commit()
-            print(recipe.upvotes)
-            return json.dumps({'upvotes' : str(recipe.upvotes)})
-        return json.dumps({'status' : 'no recipe found'})
-    return redirect(url_for('index'))
-
-def before_request():
-    db.session.commit()
-    g.search_form = SearchForm()
-    
->>>>>>> parent of 557a0e6... New chart and removed unused search functionality
 @app.route('/recipes_list', methods=["GET", "POST"])
 def recipes_list():
     form = form_ingredients_and_allergens(SearchForm())
     page = request.args.get('page', 1, type=int)
-<<<<<<< HEAD
     recipes = Recipe.query.order_by(
         Recipe.timestamp.desc()).paginate(page, 9, False)
-=======
-    recipes = Recipe.query.paginate(page, 3, False)
->>>>>>> parent of 557a0e6... New chart and removed unused search functionality
     empty = False
     if not recipes.items:
         empty = True
@@ -329,15 +300,8 @@ def recipes_stats():
 
     data = Category.query.filter(Category.id.in_(recipe_ids)).all()
     counted_ids = dict(Counter(recipe_ids))
-<<<<<<< HEAD
     categories = [category.name for category in data]
     return render_template("recipes_stats.html", categories=json.dumps(categories), count=json.dumps(list(counted_ids.values())), recipes=json.dumps(recipe_names), upvotes=json.dumps(recipes_upvotes))
-=======
-    categories = [category.name for category in data ]
-    print(categories)
-    print(counted_ids)
-    return render_template("recipes_stats.html", categories=json.dumps(categories), count=json.dumps(list(counted_ids.values())))
->>>>>>> parent of 557a0e6... New chart and removed unused search functionality
 
 
 @app.route('/search_handler', methods=["POST", "GET"])
@@ -380,26 +344,15 @@ def search_handler():
             Recipe._ingredients.any(Ingredient.id.in_(ingredients_ids)),
             ~Recipe._allergens.any(Allergen.id.in_(allergens_ids)),
             custom_filter_statement(category_id, cuisine_id)
-<<<<<<< HEAD
         ).order_by(Recipe.timestamp
                    ).paginate(page, 9, False)
-=======
-            ).order_by(Recipe.timestamp
-            ).paginate(page, 3, False)
->>>>>>> parent of 557a0e6... New chart and removed unused search functionality
     else:
         search_result = Recipe.query.filter(
             ~Recipe._allergens.any(Allergen.id.in_(allergens_ids)),
             custom_filter_statement(category_id, cuisine_id)
         ).order_by(order_recipe_by(sortkey)
-<<<<<<< HEAD
                    ).paginate(page, 9, False)
 
-=======
-        ).paginate(page, 3, False)
-        
-    print(search_result.items)
->>>>>>> parent of 557a0e6... New chart and removed unused search functionality
     reverse = False if sortkey == 'name' else True
     print("reverse" + str(reverse) + " and " + str(sortkey))
 
