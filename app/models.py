@@ -1,5 +1,4 @@
 from app import db, login
-from app.search import add_to_index, remove_from_index, query_index
 from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -18,8 +17,6 @@ allergens_in_recipe = db.Table(
     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'))
 )
 
-<<<<<<< HEAD
-=======
 class SearchableMixin(object):
     @classmethod
     def search(cls, expression, page, per_page):
@@ -60,7 +57,6 @@ class SearchableMixin(object):
 
 db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
 db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
->>>>>>> parent of 557a0e6... New chart and removed unused search functionality
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -84,12 +80,8 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
-<<<<<<< HEAD
 
 class Recipe(db.Model):
-=======
-class Recipe(SearchableMixin, db.Model):
->>>>>>> parent of 557a0e6... New chart and removed unused search functionality
     __searchable__ = ['name']
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
@@ -244,9 +236,3 @@ class Comment(db.Model):
 
     def __repr__(self):
         return '<Comment {}>'.format(self.name)
-<<<<<<< HEAD
-=======
-
-
-from app.search import add_to_index, remove_from_index, query_index
->>>>>>> parent of 557a0e6... New chart and removed unused search functionality
