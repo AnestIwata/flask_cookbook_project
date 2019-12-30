@@ -297,6 +297,9 @@ def contact():
 def recipes_stats():
     recipes = Recipe.query.all()
     recipe_ids = [recipe.category_id for recipe in recipes]
+    recipe_names = [recipe.name for recipe in recipes]
+    recipes_upvotes = [recipe.upvotes for recipe in recipes]
+
 
     data = Category.query.filter(Category.id.in_(recipe_ids)).all()
     counted_ids = dict(Counter(recipe_ids))
