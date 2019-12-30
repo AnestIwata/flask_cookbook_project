@@ -17,7 +17,7 @@
 
 This is my project for Code Institute, a web application that let's you create, browse and edit recipes. I have also added user registration and rich CSS and Javascript visual enchancments.  
 
-You can use my app online under this link [https://flask-cookbook-code.herokuapp.com/index](Heroku FlaskCookbook), registration happens instantly since it's only for the project.
+You can use my app online under this link [https://flask-cookbook-pawel.herokuapp.com/index](Heroku FlaskCookbook) , registration happens instantly since it's only for the project.
 
 ### Planning
 
