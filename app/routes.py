@@ -300,6 +300,7 @@ def recipes_stats():
     recipe_names = [recipe.name for recipe in recipes]
     recipes_upvotes = [recipe.upvotes for recipe in recipes]
 
+
     data = Category.query.filter(Category.id.in_(recipe_ids)).all()
     counted_ids = dict(Counter(recipe_ids))
     categories = [category.name for category in data]

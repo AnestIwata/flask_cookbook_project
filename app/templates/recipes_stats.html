@@ -1,5 +1,84 @@
 {% extends "base.html" %}
 {% block app_content %}
+<<<<<<< HEAD
+<div class="page">
+  <div class="container">
+    <div class="center-div">
+      <canvas id="categoryChart" width="200" height="200"></canvas>
+      <p style="padding:10px;">Number of recipes in each category</p>
+    </div>
+    <div style="padding:50px;"></div>
+    <div class="center-div">
+      <canvas id="upvotesChart" width="200" height="200"></canvas>
+      <p>Number of upvotes per recipe in the first ten</p>
+    </div>
+  </div>
+  <script>
+    var categoryctx = document.getElementById('categoryChart').getContext('2d');
+    var categories = {{ categories| safe }}
+    var count = {{ count| safe }}
+
+    var myChart = new Chart(categoryctx, {
+      type: 'pie',
+      data: {
+        labels: categories,
+        datasets: [{
+          label: '# of Votes',
+          data: count,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 2
+        }]
+      }
+    });
+
+    var upvotesctx = document.getElementById('upvotesChart').getContext('2d');
+    var upvotes = {{ upvotes| safe }}
+    var recipes = {{ recipes| safe }}
+
+    var myChart = new Chart(upvotesctx, {
+      type: 'bar',
+      data: {
+        labels: recipes,
+        datasets: [{
+          label: '# of Votes',
+          data: upvotes,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 2
+        }]
+      }
+    });
+  </script>
+=======
 <div class="page"> 
     <div class="container">
         <div class="row justify-content-center" style="width:300px; height:300px;">
@@ -47,6 +126,7 @@
       }
   });
 </script>
+>>>>>>> parent of 557a0e6... New chart and removed unused search functionality
 </div>
 
 {% endblock %}
