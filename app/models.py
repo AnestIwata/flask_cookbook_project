@@ -60,7 +60,7 @@ class Recipe(db.Model):
     serves_num_people = db.Column(db.Integer)
     time_to_prepare = db.Column(db.Integer)
     cooking_time = db.Column(db.Integer)
-    image = db.Column(db.String(128))
+    image = db.Column(db.String(10000))
     comments = db.relationship('Comment', backref='recipe', lazy='dynamic')
     upvotes = db.Column(db.Integer, default=0)
 
