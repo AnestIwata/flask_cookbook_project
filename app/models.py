@@ -45,8 +45,8 @@ def load_user(id):
 
 class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
-    short_description = db.Column(db.String(128))
+    name = db.Column(db.String(1000), index=True, unique=True)
+    short_description = db.Column(db.String(10000))
     content = db.Column(db.String(50000))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
