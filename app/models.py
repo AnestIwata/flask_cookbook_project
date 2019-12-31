@@ -111,7 +111,7 @@ class Ingredient(db.Model):
     def __repr__(self):
         return '<Ingredient {}>'.format(self.name)
 
-    def get_all_ingredients(self):
+    def get_all_ingredients():
         return Ingredient.query.all()
 
     def serialize(self):
@@ -152,7 +152,7 @@ class Country(db.Model):
     def __repr__(self):
         return '<Country {}>'.format(self.name)
 
-    def get_all_countries(self):
+    def get_all_countries():
         return Country.query
 
 
@@ -164,7 +164,7 @@ class Category(db.Model):
     def __repr__(self):
         return '<Category {}>'.format(self.name)
 
-    def get_all_categories(self):
+    def get_all_categories():
         return Category.query
 
     def get_all_categories_except_all():
@@ -179,10 +179,10 @@ class Cuisine(db.Model):
     def __repr__(self):
         return '<Cuisine {}>'.format(self.name)
 
-    def get_all_cuisines(self):
+    def get_all_cuisines():
         return Cuisine.query
 
-    def get_all_cuisines_except_all(self):
+    def get_all_cuisines_except_all():
         return Cuisine.query.filter(Cuisine.name != "All").all()
 
 
