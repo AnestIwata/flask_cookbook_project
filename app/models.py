@@ -4,7 +4,6 @@ from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 # Association tables for recipe search.
 ingredients_in_recipe = db.Table(
     '_ingredients',
@@ -40,7 +39,6 @@ class User(UserMixin, db.Model):
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
 
 
 class Recipe(db.Model):

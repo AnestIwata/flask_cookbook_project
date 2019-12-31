@@ -3,17 +3,14 @@ import re
 import json
 import sqlalchemy
 from collections import Counter
-from datetime import datetime
-from flask import Flask, flash, redirect, render_template, request, url_for, jsonify, session
+from flask import flash, redirect, render_template, request, url_for, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug import secure_filename
-from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, SearchForm, CommentForm, SearchForm
-from app.models import Recipe, User, Ingredient, Country, Category, Allergen, Cuisine, Comment
+from app.forms import LoginForm, RecipeForm, ContactForm, RegistrationForm, CommentForm, SearchForm
+from app.models import Recipe, User, Ingredient, Category, Allergen, Comment
 from app.poppulate_database import Poppulate
-from sqlalchemy import bindparam
-from sqlalchemy.ext import baked
+
 
 # Homepage route
 @app.route('/')
@@ -26,6 +23,7 @@ def index():
     if not recipes:
         empty = True
     return render_template("index.html", recipes=recipes, empty=empty, sortkey='timestamp', reverse=True)
+
 
 # Login page route
 @app.route('/login', methods=["GET", "POST"])
@@ -44,7 +42,8 @@ def login():
         empty = False
         if not recipes:
             empty = True
-        return render_template('index.html', title='Homepage', recipes=recipes, empty=empty, sortkey='timestamp', reverse=True)
+        return render_template('index.html', title='Homepage', recipes=recipes, empty=empty, sortkey='timestamp',
+                               reverse=True)
     return render_template('login.html', title='Sign In', form=form)
 
 
@@ -89,7 +88,7 @@ def add_recipe():
             print(form.image.data)
             filename = secure_filename(f.filename)
             file_path = os.path.join(
-                "app/static/img/recipes_images",  filename)
+                "app/static/img/recipes_images", filename)
             f.save(file_path)
 
             recipe = Recipe(
@@ -152,7 +151,7 @@ def edit_recipe(recipe_name):
             f = form.image.data
             filename = secure_filename(f.filename)
             file_path = os.path.join(
-                "app/static/img/recipes_images",  filename)
+                "app/static/img/recipes_images", filename)
             f.save(file_path)
             recipe.name = "non-existent"
             created_recipe = Recipe(
@@ -251,7 +250,8 @@ def recipe(recipe_name):
     else:
         print("There was an error")
     return render_template("recipe_page.html", recipe=recipe, content=content, userIsAnAuthor=userIsAnAuthor,
-                           upvotes=recipe.upvotes, comments=comments, comment_form=comment_form, nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
+                           upvotes=recipe.upvotes, comments=comments, comment_form=comment_form,
+                           nutrition_facts=render_template("_nutrition_facts.html", recipe=recipe))
 
 
 @app.route('/upvote', methods=['POST'])
@@ -300,11 +300,12 @@ def recipes_stats():
     recipe_names = [recipe.name for recipe in recipes]
     recipes_upvotes = [recipe.upvotes for recipe in recipes]
 
-
     data = Category.query.filter(Category.id.in_(recipe_ids)).all()
     counted_ids = dict(Counter(recipe_ids))
     categories = [category.name for category in data]
-    return render_template("recipes_stats.html", categories=json.dumps(categories), count=json.dumps(list(counted_ids.values())), recipes=json.dumps(recipe_names), upvotes=json.dumps(recipes_upvotes))
+    return render_template("recipes_stats.html", categories=json.dumps(categories),
+                           count=json.dumps(list(counted_ids.values())), recipes=json.dumps(recipe_names),
+                           upvotes=json.dumps(recipes_upvotes))
 
 
 @app.route('/search_handler', methods=["POST", "GET"])
@@ -373,7 +374,7 @@ def form_ingredients_and_allergens(form):
         Ingredient.id, Ingredient.name).all()
     form.allergens.choices = db.session.query(
         Allergen.id, Allergen.name).all()
-    if(isinstance(form, SearchForm)):
+    if (isinstance(form, SearchForm)):
         form.sortkey.choices = [('newest', 'Newest'), ('oldest', 'Oldest'),
                                 ('popularity', 'Popularity'), ('name', 'Name')]
         form.any_ingredients.choices = [

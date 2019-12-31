@@ -1,7 +1,8 @@
 from flask import request
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
-from wtforms import SelectMultipleField, StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, IntegerField, widgets
+from wtforms import SelectMultipleField, StringField, PasswordField, BooleanField, SubmitField, TextAreaField, \
+    SelectField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, ValidationError, EqualTo, NumberRange
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from app.models import User, Category, Country, Cuisine, Recipe
@@ -37,11 +38,11 @@ class RegistrationForm(FlaskForm):
 
 class RecipeForm(FlaskForm):
     name = StringField('Recipe Name:', validators=[
-                       DataRequired(), Length(min=2, max=100)])
+        DataRequired(), Length(min=2, max=100)])
     short_description = StringField('Give a short description of your recipe:', validators=[
-                                    DataRequired(), Length(min=5, max=300)])
+        DataRequired(), Length(min=5, max=300)])
     content = TextAreaField('Your recipe instructions: ', validators=[
-                            Length(min=50, max=5000)])
+        Length(min=50, max=5000)])
     ingredients = SelectMultipleField(
         'Select ingredients (you can select more than one):', coerce=int, validators=[DataRequired()],
         render_kw={'class': 'form-control js-search-category select2-hidden-accessible', 'multiple': 'multiple'})
@@ -56,11 +57,11 @@ class RecipeForm(FlaskForm):
         u'Choose category:', query_factory=Category.get_all_categories_except_all, get_label='name',
         render_kw={'class': 'form-control js-search-category select2-hidden-accessible'})
     time_to_prepare = IntegerField(u'Time it takes to prepare food (input number of minutes):', validators=[
-                                   DataRequired(), NumberRange(min=1, max=1000)])
+        DataRequired(), NumberRange(min=1, max=1000)])
     cooking_time = IntegerField(u'How long it takes to cook food (input number of hours):', validators=[
-                                DataRequired(), NumberRange(min=1, max=48)])
+        DataRequired(), NumberRange(min=1, max=48)])
     serves_num_people = IntegerField(u'How many people can it be served for (input a number):', validators=[
-                                     DataRequired(), NumberRange(min=1, max=100)])
+        DataRequired(), NumberRange(min=1, max=100)])
     calories = IntegerField(u'Calories:', validators=[DataRequired()])
     carbohydrates = IntegerField(
         u'Carbohydrates:', validators=[DataRequired()])
@@ -96,7 +97,7 @@ class CommentForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     comment = TextAreaField('Comment: ', validators=[
-                            Length(min=5, max=5000)])
+        Length(min=5, max=5000)])
     website = StringField('Website')
     submit = SubmitField('Submit')
 
@@ -117,7 +118,8 @@ class SearchForm(FlaskForm):
     any_ingredients = SelectField('Recipe needs to have', coerce=int,
                                   render_kw={'class': 'form-control js-search-category select2-hidden-accessible'})
     sortkey = SelectField('Sort recipes by: ')
-    search_text = StringField('Search', render_kw={'class':'form-control js-search-category select2-hidden-accessible'})
+    search_text = StringField('Search',
+                              render_kw={'class': 'form-control js-search-category select2-hidden-accessible'})
     submit = SubmitField('Search Recipes')
 
     def __init__(self, *args, **kwargs):
