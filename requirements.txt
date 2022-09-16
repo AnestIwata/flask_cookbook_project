@@ -17,7 +17,7 @@ idna==2.8
 itsdangerous==1.1.0
 Jinja2==2.10.1
 lesscpy==0.13.0
-Mako==1.0.13
+Mako==1.2.2
 MarkupSafe==1.1.1
 Pillow==6.2.0
 pillowcase==2.0.0
