@@ -19,7 +19,7 @@ Jinja2==2.10.1
 lesscpy==0.13.0
 Mako==1.0.13
 MarkupSafe==1.1.1
-Pillow==6.2.0
+Pillow==9.3.0
 pillowcase==2.0.0
 ply==3.11
 psycopg2==2.8.3
